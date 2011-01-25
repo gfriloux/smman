@@ -137,7 +137,8 @@ int spy_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event, const 
 		struct logfile *log = data;
 		fpos_t new_pos;
 		unsigned long long int filesize;
-
+		Eina_Counter *counter;
+		char *counterresult;
 		if( !log )
 			return(ECORE_CALLBACK_RENEW);
 
@@ -177,6 +178,11 @@ int spy_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event, const 
 
 		// Message is sent, we can free our structure
 		logmessages_free(&new_logmessage);
+		eina_counter_stop(counter, 1);
+
+		counterresult = eina_counter_dump(counter);
+		EINA_LOG_DOM_DBG(einadom_spy, "Message processing time :\n%s", counterresult);
+		eina_counter_free(counter);
 	}
 	else if( event == ECORE_FILE_EVENT_DELETED_SELF
 	      || event == ECORE_FILE_EVENT_DELETED_DIRECTORY
