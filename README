@@ -1,0 +1,35 @@
+If you use it on a fresh install, with a non existant DB, you have to build it :
+
+curl -XPUT http://YOURSERVER:9200/YOURINDEX/ -d '
+{
+ "settings":
+ {
+  "events":
+  {
+   "mappings":
+   {
+    "@source":
+     {"type":"string"},
+    "@source_host":
+     {"type":"string"},
+    "@source_path":
+     {"type":"string"},
+    "@timestamp":
+     {"type":"date"},
+    "@tags":
+     {"type":"string"},
+    "@message":
+     {"type":"string"},
+    "@fields":
+    {
+     "type":"object",
+     "properties":
+     {
+      "HOSTNAME":
+       {"type":"string"}
+     }
+    }
+   }
+  }
+ }
+}'

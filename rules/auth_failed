@@ -1,0 +1,4 @@
+# This rules will match any log message that contains "Failed password for"
+# And add the tag "auth_fail" to it when indexing it into ES
+message = .*Failed password for.*
+tags = auth_fail

@@ -1,0 +1,3 @@
+# This rules will match any log file in /var/log/ to add the tag "syslog"
+filename = /var/log/*.log
+tags = syslog

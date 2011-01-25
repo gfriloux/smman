@@ -1,0 +1,4 @@
+# This rules will match any log message that contains "Accepted password"
+# And add the tag "auth_success" to it when indexing it into ES
+message = .*Accepted password.*
+tags = auth_success

@@ -1,0 +1,3 @@
+# This rules will match any apache log file in /var/log/httpd/ to add the tag "httpd"
+filename = /var/log/httpd/*_log
+tags = httpd
