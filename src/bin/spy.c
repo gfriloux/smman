@@ -141,7 +141,7 @@ int spy_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event, const 
 		char *counterresult;
 		if( !log )
 			return(ECORE_CALLBACK_RENEW);
-
+		eina_counter_start(counter);
 		// If logfile got trunc, than size is different
 		logfiles_getsize((char *)path, &filesize);
 
