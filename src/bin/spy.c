@@ -354,6 +354,7 @@ int spy_extract_new_lines(char *filename, fpos_t pos_cur, fpos_t *pos_new, char 
 			fgetpos(fp, pos_new);
 
 		// We have a message to log
+		break;
 	}
 
 	fclose(fp);
