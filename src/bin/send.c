@@ -241,7 +241,7 @@ int send_toES(char *jsondata)
 	{
 		EINA_LOG_DOM_ERR(einadom_send, "Sending of JSON query failed, curl returned : %d", res);
 		send_destroy();
-		send_connected == EINA_FALSE;
+		send_connected = EINA_FALSE;
 	}
 
 	return(0);
