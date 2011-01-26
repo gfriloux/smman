@@ -93,6 +93,9 @@ int main(int argc, char **argv)
 	eina_init();
 	ecore_init();
 	ecore_file_init();
+	//send_init();
+
+	send_connected = EINA_FALSE;
 
 	while( 1 )
 	{

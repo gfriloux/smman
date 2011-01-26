@@ -161,6 +161,40 @@ char *send_escape(char *src, char **dst)
 }
 
 /**
+ * @fn int send_destroy(void)
+ * @brief Inits the curl object, and set necessary params
+ *
+ * @return 0
+ */
+int send_init(void)
+{
+	curl = curl_easy_init();
+	if( !curl )
+	{
+		EINA_LOG_DOM_ERR(einadom_send, "Can't init curl.");
+		return(-1);
+	}
+	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, EINA_TRUE);
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, send_fromES);
+	curl_easy_setopt(curl, CURLOPT_URL, global_ESserver);
+	send_connected = EINA_TRUE;
+
+	return(0);
+}
+
+/**
+ * @fn int send_destroy(void)
+ * @brief Destroys the curl object
+ *
+ * @return 0
+ */
+int send_destroy(void)
+{
+	curl_easy_cleanup(curl);
+	return(0);
+}
+
+/**
  * @fn int send_toES(char *jsondata)
  * @brief This function will send a given JSON data to the configured
  *  JSON server
@@ -196,26 +230,20 @@ int send_toES(char *jsondata)
 	ecore_con_url_free(ecu);
 	ecore_con_url_shutdown();
 */
-	CURL *curl;
-	CURLcode res;
-
-	curl = curl_easy_init();
-	if( !curl )
+	if( send_connected == EINA_FALSE )
 	{
-		EINA_LOG_DOM_ERR(einadom_send, "Can't init curl.");
-		return(-1);
+		send_init();
 	}
-	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, EINA_TRUE);
-	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, send_fromES);
-	curl_easy_setopt(curl, CURLOPT_URL, global_ESserver);
-	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsondata);
 
+	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsondata);
 	res = curl_easy_perform(curl);
 	if( res )
 	{
 		EINA_LOG_DOM_ERR(einadom_send, "Sending of JSON query failed, curl returned : %d", res);
+		send_destroy();
+		send_connected == EINA_FALSE;
 	}
-	curl_easy_cleanup(curl);
+
 	return(0);
 }
 

@@ -30,9 +30,14 @@
 
 #include "global.h"
 
+CURL *curl;
+CURLcode res;
+unsigned char send_connected;
+
 int send_logmessage(struct logmessage *new_logmessage);
 int send_convJSON(char *source_host, char *source_path, char *type, char *message, char *tags, char *timestamp, char **jsondata);
 char *send_escape(char *src, char **dst);
 int send_toES(char *jsondata);
 size_t send_fromES(void *ptr, size_t size, size_t nmemb, void *data);
-
+int send_init(void);
+int send_destroy(void);
