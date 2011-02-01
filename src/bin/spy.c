@@ -182,6 +182,7 @@ int spy_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event, const 
 
 		counterresult = eina_counter_dump(counter);
 		EINA_LOG_DOM_DBG(einadom_spy, "Message processing time :\n%s", counterresult);
+		free(counterresult);
 		eina_counter_free(counter);
 	}
 	else if( event == ECORE_FILE_EVENT_DELETED_SELF
