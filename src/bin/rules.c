@@ -90,7 +90,6 @@ int rules_load_rule(char *rule_name)
 
 	// We init default values for our struct
 	rules_temp->filename = NULL;
-	rules_temp->message = NULL;
 	rules_temp->type = NULL;
 	rules_temp->source_host = NULL;
 	rules_temp->source_path = NULL;
@@ -123,10 +122,23 @@ int rules_load_rule_loadspec(char *variable, char *value)
 		rules_temp->filename = malloc(sizeof(char) * ( strlen(value) + 1 ));
 		strcpy(rules_temp->filename, value);
 	}
-	else if( !strcmp(variable, "message") )
+	else if( ( !strcmp(variable, "message") )
+	    || ( !strcmp(variable, "message_match") )
+	    || ( !strcmp(variable, "message_unmatch") )
+	       )
 	{
-		rules_temp->message = malloc(sizeof(char) * ( strlen(value) + 1 ));
-		strcpy(rules_temp->message, value);
+		struct regex *tmp_regex;
+		tmp_regex = malloc(sizeof(struct regex));
+
+		tmp_regex->message = malloc(sizeof(char) * ( strlen(value) + 1 ));
+		strcpy(tmp_regex->message, value);
+
+		if( !strcmp(variable, "message_unmatch") )
+			tmp_regex->must_match = 0;
+		else
+			tmp_regex->must_match = 1;
+
+		rules_temp->list_regex = eina_list_append(rules_temp->list_regex, tmp_regex);
 	}
 	else if( !strcmp(variable, "type") )
 	{
@@ -177,7 +189,6 @@ int rules_print(void)
 		EINA_LOG_DOM_INFO(einadom_rules,
 		                  "\n[%s]\n"
 		                  "\tfilename\t= %s\n"
-		                  "\tmessage\t\t= %s\n"
 		                  "\ttype\t\t= %s\n"
 		                  "\tsource_host\t= %s\n"
 		                  "\tsource_path\t= %s\n"
@@ -185,7 +196,6 @@ int rules_print(void)
 		                  "\tdelete\t= %d\n\n",
 		                  foundrule->name,
 		                  foundrule->filename,
-		                  foundrule->message,
 		                  foundrule->type,
 		                  foundrule->source_host,
 		                  foundrule->source_path,
@@ -228,9 +238,11 @@ int rules_list(int (*callback)(struct rule *foundrule))
  */
 int rules_filtermessage(struct logmessage *new_logmessage)
 {
-	Eina_List *l;
+	Eina_List *l, *l2;
 	struct rule *foundrule = NULL;
-	int ret;
+	struct regex *foundregex = NULL;
+	int ret,
+	    excluded = 0;
 
 	// We check each rules to see what we have to do
 	EINA_LIST_FOREACH(list_rules, l, foundrule)
@@ -248,29 +260,33 @@ int rules_filtermessage(struct logmessage *new_logmessage)
 		}
 
 		// Now we check for message filtering
-		if( foundrule->message )
+		EINA_LIST_FOREACH(foundrule->list_regex, l2, foundregex)
 		{
 			regex_t preg;
 			size_t nmatch = 2;                                                      
 			regmatch_t pmatch[2];
 
-			ret = regcomp(&preg, foundrule->message, REG_EXTENDED);
+			ret = regcomp(&preg, foundregex->message, REG_EXTENDED);
 			if( ret )
 			{
-				EINA_LOG_DOM_ERR(einadom_rules, "Regcomp failed to compile regexp %s", foundrule->message);
+				EINA_LOG_DOM_ERR(einadom_rules, "Regcomp failed to compile regexp %s", foundregex->message);
 				regfree(&preg);
 				continue;
 			}
 
 			ret = regexec(&preg, new_logmessage->message,nmatch, pmatch, 0);
-			if( ret )
+			if( ret == foundregex->must_match )
 			{
-				EINA_LOG_DOM_INFO(einadom_rules, "Log \"%s\" from \"%s\" is not affected by rule %s (message exclude)", new_logmessage->message, new_logmessage->source_path, foundrule->name);
+				EINA_LOG_DOM_INFO(einadom_rules, "Log \"%s\" from \"%s\" is not affected by rule %s (message exclude : %s / %d / %d)", new_logmessage->message, new_logmessage->source_path, foundrule->name, foundregex->message, foundregex->must_match, ret);
 				regfree(&preg);
-				continue;
+				excluded = 1;
+				break;
 			}
 			regfree(&preg);
 		}
+
+		if( excluded )
+			continue;
 
 		// If we get here, then our log message have to be filtered
 

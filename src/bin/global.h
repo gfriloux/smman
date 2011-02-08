@@ -45,12 +45,23 @@ struct rule
 {
 	char *name,					/**< Rule's name (Guessed using the filename of the rule inside the rules directory)                                                        */
 	     *filename,				/**< It is the filename of the logfile(s) that match this rule (see this as a condition)                                                    */
-	     *message,				/**< Regexp to apply to message we get from syslog, the match them (see this as a condition)                                                */
 	     *type,					/**< Type we will apply to the matched log message (see this as an affectation)                                                             */
 	     *source_host,			/**< Host we will apply to the matched log message (see this as an affectation)                                                             */
 	     *source_path,			/**< Log path we will apply to the matched log message (its like renaming the log, without mv it) (see this as an affectation)              */
 	     *tags;					/**< tags we will apply to the matched log message (see this as an affectation)                                                             */
 	int todel;					/**< If set to something other than 0, every matched rule will not be indexed                                                               */
+	Eina_List *list_regex;		/**< Regexps to apply to message we get from syslog, then match them (see this as a condition)                                              */
+};
+
+/**
+ * @struct regex
+ * @brief This structure can handle a regex that will be compared to log messages
+ *  in order to see if they are affected by a rule or not
+ */
+struct regex
+{
+	char *message;
+	int must_match;
 };
 
 /**
