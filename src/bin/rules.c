@@ -269,13 +269,19 @@ int rules_filtermessage(struct logmessage *new_logmessage)
 			}
 		}
 
-		// Now we check for message filtering
+		// For every regex affected to the rule, we apply it to the
+		// Log message we got to see if we have something to filter
 		EINA_LIST_FOREACH(foundrule->list_regex, l2, foundregex)
 		{
 			size_t nmatch = 2;                                                      
 			regmatch_t pmatch[2];
 
 			ret = regexec(&(foundregex->preg), new_logmessage->message,nmatch, pmatch, 0);
+
+			// If regexec returns 0, then the log message matches the regex.
+			// If regexec returns 1, then the log message doesnt match the regex.
+			// So if the regex must match (message= or message_match= in rule, so must_match=1) or musnt match (message_unmatch=, must_match=0),
+			// We can consider that the message must be filtered if regex returns something different than 'must_match'
 			if( ret == foundregex->must_match )
 			{
 				EINA_LOG_DOM_INFO(einadom_rules, "Log \"%s\" from \"%s\" is not affected by rule %s (message exclude : %s / %d / %d)", new_logmessage->message, new_logmessage->source_path, foundrule->name, foundregex->message, foundregex->must_match, ret);
