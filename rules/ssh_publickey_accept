@@ -1,0 +1,13 @@
+# This rule will match any log message from /var/log/auth.log that
+# is about a connection using a valid public key for user root, and that
+# is not from normally authorized IPs.
+# These logs will be tagged with 'alert' word
+filename = /var/log/auth.log
+message = .*Accepted publickey for root.*
+message_unmatch = .*192\.168\.2\.84.*
+message_unmatch = .*192\.168\.2\.82.*
+message_unmatch = .*192\.168\.2\.94.*
+
+
+tags = alert
+
