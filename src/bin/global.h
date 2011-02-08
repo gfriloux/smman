@@ -28,6 +28,7 @@
 #include <Eina.h>
 #include <Ecore.h>
 #include <Ecore_File.h>
+#include <regex.h>
 
 #ifndef GLOBALVARS
 #define GLOBALVARS
@@ -62,6 +63,7 @@ struct regex
 {
 	char *message;
 	int must_match;
+	regex_t preg;
 };
 
 /**

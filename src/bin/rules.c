@@ -128,7 +128,17 @@ int rules_load_rule_loadspec(char *variable, char *value)
 	       )
 	{
 		struct regex *tmp_regex;
+		int ret;
+
 		tmp_regex = malloc(sizeof(struct regex));
+
+		ret = regcomp(&(tmp_regex->preg), value, REG_EXTENDED);
+		if( ret )
+		{
+			EINA_LOG_DOM_ERR(einadom_rules, "Regcomp failed to compile regexp %s", value);
+			free(tmp_regex);
+			return(0);
+		}
 
 		tmp_regex->message = malloc(sizeof(char) * ( strlen(value) + 1 ));
 		strcpy(tmp_regex->message, value);
@@ -262,27 +272,16 @@ int rules_filtermessage(struct logmessage *new_logmessage)
 		// Now we check for message filtering
 		EINA_LIST_FOREACH(foundrule->list_regex, l2, foundregex)
 		{
-			regex_t preg;
 			size_t nmatch = 2;                                                      
 			regmatch_t pmatch[2];
 
-			ret = regcomp(&preg, foundregex->message, REG_EXTENDED);
-			if( ret )
-			{
-				EINA_LOG_DOM_ERR(einadom_rules, "Regcomp failed to compile regexp %s", foundregex->message);
-				regfree(&preg);
-				continue;
-			}
-
-			ret = regexec(&preg, new_logmessage->message,nmatch, pmatch, 0);
+			ret = regexec(&(foundregex->preg), new_logmessage->message,nmatch, pmatch, 0);
 			if( ret == foundregex->must_match )
 			{
 				EINA_LOG_DOM_INFO(einadom_rules, "Log \"%s\" from \"%s\" is not affected by rule %s (message exclude : %s / %d / %d)", new_logmessage->message, new_logmessage->source_path, foundrule->name, foundregex->message, foundregex->must_match, ret);
-				regfree(&preg);
 				excluded = 1;
 				break;
 			}
-			regfree(&preg);
 		}
 
 		if( excluded )
