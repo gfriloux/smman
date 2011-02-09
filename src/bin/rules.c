@@ -270,6 +270,8 @@ int rules_filtermessage(struct logmessage *new_logmessage)
 			}
 		}
 
+		excluded = 1;
+
 		// For every regex affected to the rule, we apply it to the
 		// Log message we got to see if we have something to filter
 		EINA_LIST_FOREACH(foundrule->list_regex, l2, foundregex)
