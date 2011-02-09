@@ -95,6 +95,7 @@ int rules_load_rule(char *rule_name)
 	rules_temp->source_path = NULL;
 	rules_temp->tags = NULL;
 	rules_temp->todel = 0;
+	rules_temp->list_regex = NULL;
 
 	libconfig_list(&myconf, rules_load_rule_loadspec);
 
