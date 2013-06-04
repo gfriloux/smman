@@ -146,7 +146,7 @@ int logfiles_getend(char *logfile, fpos_t *pos_end)
 		EINA_LOG_DOM_ERR(einadom_logfiles, "Can't open %s : %s", logfile, strerror(errno));
 		return(-1);
 	}
-	fseek(fp, 0L, SEEK_END);
+	fseeko(fp, 0L, SEEK_END);
 	fgetpos(fp, pos_end);
 
 	fclose(fp);
