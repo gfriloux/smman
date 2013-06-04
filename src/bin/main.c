@@ -36,18 +36,18 @@
  * @author Guillaume Friloux <guillaume.friloux@asp64.com>
  *
  * @section INTRODUCTION Introduction
- * SMMan is gateway between syslog files and an <a href=www.elasticsearch.com>ElasticSearch</a> database.<br />
+ * SMMan is gateway between syslog files and an <a href=http://www.elasticsearch.com>ElasticSearch</a> database.<br />
  * SMMan has a few more interesting stuff : He can tag every log he sees by using defined rules on them.<br />
  * SMMan uses a configuration file, and needs rules files that must be written by the user of SMMan.<br />
  * SMMan will then use these rules to monitor all the specified logfiles (using inotify), and extract every new entry
- * to filter it using the rules and then indexing it in the configured <a href=www.elasticsearch.com>ElasticSearch</a> database.
+ * to filter it using the rules and then indexing it in the configured <a href=http://www.elasticsearch.com>ElasticSearch</a> database.
  * <img src=intro.png>
  *
  * <br />
  * @section CONFIGURATION Configuration
  * The configuration file has to be in <b>/etc/smman/smman.conf</b><br />
  * For now, there is only 3 configurable variables :
- * @li @b server : URL to <a href=www.elasticsearch.com>ElasticSearch</a> database. SMMan speaks to <a href=www.elasticsearch.com>ElasticSearch</a> using JSON.
+ * @li @b server : URL to <a href=http://www.elasticsearch.com>ElasticSearch</a> database. SMMan speaks to <a href=http://www.elasticsearch.com>ElasticSearch</a> using JSON.
  * @li @b host : Allows you to set a different host that the one returned by command hostname (optionnal).
  * @li @b type : Default type for all logs (optionnal).
  *

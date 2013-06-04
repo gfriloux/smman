@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -41,7 +41,6 @@ int logfiles_exist(char *logfile)
 {
 	Eina_List *l;
 	struct logfile *foundlogfile = NULL;
-	
 	EINA_LIST_FOREACH(list_logfiles, l, foundlogfile)
 	{
 		if( !strcmp(foundlogfile->name, logfile) )
@@ -78,10 +77,9 @@ int logfiles_print(void)
 {
 	Eina_List *l;
 	struct logfile *foundlogfile = NULL;
-	
 	EINA_LIST_FOREACH(list_logfiles, l, foundlogfile)
 	{
-		EINA_LOG_DOM_INFO(einadom_logfiles, "Name = %s\tCursor = %d", foundlogfile->name, foundlogfile->cursor);
+		EINA_LOG_DOM_INFO(einadom_logfiles, "Name = %s", foundlogfile->name);
 	}
 	return(0);
 }

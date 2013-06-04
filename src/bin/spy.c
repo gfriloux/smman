@@ -70,7 +70,7 @@ int spy_addwatcher(struct rule *foundrule)
 		return(-1);
 	}
 
-	EINA_LOG_DOM_DBG(einadom_spy, "Found %d results for %s", p.we_wordc, foundrule->filename);
+	EINA_LOG_DOM_DBG(einadom_spy, "Found %zu results for %s", p.we_wordc, foundrule->filename);
 
 	// We now have a list of files (or a unique file) and we want to add them
 	// To our file list
@@ -156,7 +156,7 @@ int spy_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event, const 
 		}
 		log->filesize = filesize;
 
-		EINA_LOG_DOM_DBG(einadom_spy, "Event on %s - %d !", path, log->cursor);
+		EINA_LOG_DOM_DBG(einadom_spy, "Event on %s !", path);
 
 		// We must take attention to the fact that the file might
 		// Have been truncated
@@ -348,7 +348,6 @@ int spy_extract_new_lines(char *filename, fpos_t pos_cur, fpos_t *pos_new, char 
 		if( ret != 1 )
 		{
 			fgetpos(fp, pos_new);
-			EINA_LOG_DOM_DBG(einadom_spy, "Break! new_pos = %d", *pos_new);
 			break;
 		}
 		else
