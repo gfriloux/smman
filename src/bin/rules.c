@@ -270,7 +270,7 @@ int rules_filtermessage(struct logmessage *new_logmessage)
 			}
 		}
 
-		excluded = 1;
+		excluded = 0;
 
 		// For every regex affected to the rule, we apply it to the
 		// Log message we got to see if we have something to filter
