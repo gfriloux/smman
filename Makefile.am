@@ -44,6 +44,8 @@ m4/po.m4 \
 m4/progtest.m4 \
 m4/stdint_h.m4 \
 m4/uintmax_t.m4 \
-m4/ulonglong.m4
-
-
+m4/ulonglong.m4 \
+debian/files \
+debian/smman.debhelper.log \
+debian/smman.substvars \
+debian/stamp*

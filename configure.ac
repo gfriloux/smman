@@ -1,6 +1,10 @@
-m4_define([v_rev], m4_esyscmd([(svnversion "." | grep -v exported || echo 0) | tr -d ' MSP\n']))
+m4_define([v_maj], [1])
+m4_define([v_min], [0])
+m4_define([v_mic], [1])
+m4_define([v_ver], [v_maj.v_min.v_mic])
 
-AC_INIT([Smman], [1.0], [guillaume.friloux@asp64.com])
+
+AC_INIT([Smman], [v_ver], [guillaume.friloux@aspfrance.com])
 
 AC_PREREQ(2.01)
 AC_CONFIG_SRCDIR([configure.ac])
@@ -13,12 +17,14 @@ AC_PROG_LIBTOOL
 AC_CONFIG_MACRO_DIR([m4])
 
 dnl we just have set the version info, then:
-version_number=1.0
-revision_number="v_rev"
+version_number=v_ver
 AC_SUBST(version_number)
-AC_SUBST(revision_number)
 
+GCC_STACK_PROTECT_LIB
+GCC_STACK_PROTECT_CC
 AC_PROG_CC
+AM_PROG_CC_C_O
+AC_PROG_MKDIR_P
 
 AC_CONFIG_FILES([
 Makefile
@@ -44,7 +50,11 @@ echo
 echo "  eina.........: ${have_eina}"
 echo "  ecore........: ${have_ecore}"
 echo "  curl.........: ${have_curl}"
-echo
 echo "  prefix.......: $prefix"
+echo
+echo "Build Options:"
+echo "  CPPFLAGS.....: $CPPFLAGS"
+echo "  CFLAGS.......: $CFLAGS"
+echo "  LDFLAGS......: $LDFLAGS"
 echo
 
