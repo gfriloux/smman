@@ -217,16 +217,3 @@ int libconfig_free(struct libconfig *myconf)
 	eina_list_free(myconf->lconfig);
 	return(0);
 }
-
-/**
- * @fn void libconfig_version(char *version)
- * @brief Gets revision number of the library
- *
- * @param version buffer to use to store revision number
- *
- */
-void libconfig_version(char *version)
-{
-	strcpy(version, REVISION);
-	return;
-}

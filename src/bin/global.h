@@ -25,6 +25,10 @@
  *
  * Contains all global variables we need
  */
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <Eina.h>
 #include <Ecore.h>
 #include <Ecore_File.h>

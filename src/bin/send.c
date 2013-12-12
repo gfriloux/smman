@@ -259,7 +259,10 @@ int send_toES(char *jsondata)
  *
  * @return Number of bytes received
  */
-size_t send_fromES(void *ptr, size_t size, size_t nmemb, void *data)
+size_t send_fromES(void *ptr,
+                   size_t size,
+                   size_t nmemb,
+                   void *data EINA_UNUSED)
 {
 	if( strncmp((char *)ptr, "{\"ok\":", 6) )
 		EINA_LOG_DOM_ERR(einadom_send, "Indexing of JSON data failed");

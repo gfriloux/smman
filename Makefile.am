@@ -1,6 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
-
-SUBDIRS = src doc
+AUTOMAKE_OPTIONS = subdir-objects
+AM_MAKEFLAGS = --no-print-directory
 
 MAINTAINERCLEANFILES = \
 ABOUT-NLS \
@@ -49,3 +49,42 @@ debian/files \
 debian/smman.debhelper.log \
 debian/smman.substvars \
 debian/stamp*
+
+EXTRA_DIST =
+
+bin_PROGRAMS =
+BIN_CPPFLAGS = -I$(top_srcdir)
+
+include src/bin/Makefile.mk
+
+maintainer-clean-local:
+	rm -rf autom4te.cache
+
+if ENABLE_TESTS
+
+lcov-reset:
+	@rm -rf $(top_builddir)/coverage
+	@find $(top_builddir) -name "*.gcda" -delete
+	@lcov --zerocounters --directory $(top_builddir)
+
+lcov-report:
+	@mkdir $(top_builddir)/coverage
+	lcov --capture --compat-libtool --output-file $(top_builddir)/coverage/coverage.info --directory $(top_builddir)
+	lcov --remove $(top_builddir)/coverage/coverage.info '*.h' --output-file $(top_builddir)/coverage/coverage.cleaned.info
+	genhtml -t "$(PACKAGE_STRING)" -o $(top_builddir)/coverage/html $(top_builddir)/coverage/coverage.cleaned.info
+	@echo "Coverage Report at $(top_builddir)/coverage/html"
+	if test -d $(top_builddir)/doc/html/; then cp -vfr $(top_builddir)/coverage/html $(top_builddir)/doc/html/; mv $(top_builddir)/doc/html/html $(top_builddir)/doc/html/coverage/; fi
+
+check-local:
+	@$(MAKE) lcov-reset
+else
+
+lcov-reset:
+	@echo "reconfigure with --enable-tests"
+
+lcov-report:
+	@echo "reconfigure with --enable-tests"
+
+check-local:
+	@echo "reconfigure with --enable-tests"
+endif

@@ -102,19 +102,15 @@ int main(int argc, char **argv)
 		int option_index = 0;
 
 		static struct option long_options[] = {
-		   {"version", 0, 0, 'v'},
 		   {"help", 0, 0, 'h'},
 		   {0, 0, 0, 0}
 		};
 
-		c = getopt_long(argc, argv, "vh", long_options, &option_index);
+		c = getopt_long(argc, argv, "h", long_options, &option_index);
 		if (c == -1) break;
 
 		switch (c)
 		{
-			case 'v':
-				version(argv[0]);
-				exit(0);
 			case 'h':
 				usage(argv[0]);
 				exit(0);
@@ -167,15 +163,4 @@ void usage(char *progname)
 	printf("\n");
 	printf("\tDebugging : \n");
 	printf("\t\tEINA_LOG_LEVEL=5 %s\n", progname);
-}
-
-/**
- * @fn void version(char *progname)
- * @brief Shows program revision
- *
- * @param progname (char *) Name of program
- */
-void version(char *progname)
-{
-	printf("%s r%s\n", progname, REVISION);
 }

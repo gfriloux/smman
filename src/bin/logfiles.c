@@ -26,6 +26,11 @@
  * @see logfile
  * @see list_logfiles
  */
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+
 #include "logfiles.h"
 
 /**
