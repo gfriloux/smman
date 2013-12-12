@@ -1,0 +1,19 @@
+Source: smman
+Section: main
+Priority: optional
+Maintainer: Guillaume Friloux <guillaume.friloux@asp64.com>
+Build-Depends: debhelper (>= 7.0.50~)
+Standards-Version: 3.8.4
+
+Package: smman
+Section: main
+Architecture: any
+Depends: ${shlibs:Depends}, libeina1, libecore1, libecore-file1
+Description: SMMan is a logstash replacement in C. it only supports 
+ files as input and elasticsearch as output.
+
+Package: smman-dbg
+Section: debug
+Priority: extra
+Description: Debugging symbols for smman
+
