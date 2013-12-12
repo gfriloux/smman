@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 ASP64 <guillaume.friloux@asp64.com>
+ * Copyright © 2013 Guillaume Friloux <kuri@efl.so>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 /**
  * @file logfiles.h
  * @brief Contains all includes and prototypes for logfiles.c
- * @author Guillaume Friloux <guillaume.friloux@asp64.com>
+ * @author Guillaume Friloux <kuri@efl.so>
  * @version 1.0
  *
  * Contains all includes and prototypes for logfiles.c

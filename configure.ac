@@ -57,4 +57,3 @@ echo "  CPPFLAGS.....: $CPPFLAGS"
 echo "  CFLAGS.......: $CFLAGS"
 echo "  LDFLAGS......: $LDFLAGS"
 echo
-

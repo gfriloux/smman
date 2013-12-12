@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 ASP64 <guillaume.friloux@asp64.com>
+ * Copyright © 2013 Guillaume Friloux <kuri@efl.so>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -19,7 +19,7 @@
 /**
  * @file spy.c
  * @brief Contains functions that monitors logfiles
- * @author Guillaume Friloux <guillaume.friloux@asp64.com>
+ * @author Guillaume Friloux <kuri@efl.so>
  * @version 1.0
  *
  * @bug : In rules, use wildcards only for filenames, not directories

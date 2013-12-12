@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 ASP64 <guillaume.friloux@asp64.com>
+ * Copyright © 2013 Guillaume Friloux <kuri@efl.so>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -19,7 +19,7 @@
 /**
  * @file date.c
  * @brief Gets us the current date, like logstash does
- * @author Guillaume Friloux <guillaume.friloux@asp64.com>
+ * @author Guillaume Friloux <kuri@efl.so>
  * @version 1.0
  *
  * Gets us the current date, like logstash does
@@ -41,7 +41,7 @@ char * timestamp_XML(char * date)
 	time_t temps;
 	struct tm temp;
 	temps=time(NULL);
-	localtime_r(&temps,&temp);  
+	localtime_r(&temps,&temp);
 	sprintf(date,"%04d-%02d-%02dT%02d:%02d:%02d.000000Z",(temp.tm_year)+1900,(temp.tm_mon)+1,temp.tm_mday,temp.tm_hour,temp.tm_min,temp.tm_sec);
 	return(date);
 }
