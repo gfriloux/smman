@@ -29,7 +29,7 @@ int conf_load(void)
 {
 	struct libconfig myconf;
 
-	strcpy(global_ESserver, "http://192.168.2.84:9200/logstash/events/");
+	strcpy(global_ESserver, "http://127.0.0.1:9200/logstash/events/");
 	strcpy(global_rulesdir, "/etc/smman/rules.d/");
 	strcpy(global_conf, "/etc/smman/smman.conf");
 	strcpy(global_type, "syslog");
