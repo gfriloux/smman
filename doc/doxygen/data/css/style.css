@@ -1,0 +1,324 @@
+html, body
+{
+	height: 100%;
+	margin: 0px;
+	padding: 0px;
+   font-family: Tahoma;
+   font-size:12px;
+}
+
+#container {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -53px;
+}
+
+#footer, #push {
+	height: 53px;
+}
+
+
+* html #container {
+	height: 100%;
+}
+
+/* Prevent floating elements overflowing containers */
+.clear {
+	clear: both;
+	width: 0px;
+	height: 0px;
+}
+
+/* Flexible & centered layout from 750 to 960 pixels */
+.layout {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#content
+{
+   padding-left: 5px;
+}
+
+/* Prevent design overflowing the viewport in small resolutions */
+#container {
+	background-image: url(../img/head_bg.png);
+	background-repeat: repeat-x;
+}
+
+#header {
+	width: 100%;
+	height: 102px;
+}
+
+#header h1 {
+	width: 253px;
+	height: 63px;
+	background-image: url(../img/corepack.png);
+	background-repeat: no-repeat;
+	position: absolute;
+	margin: 0px;
+}
+
+#header h1 span {
+	display: none;
+}
+
+#header h2 {
+	display: none;
+}
+
+/* .menu-container is used to set properties common to .menu and .submenu */
+#header .menu-container {
+}
+
+#header .menu-container ul {
+	list-style-type: none;
+	list-style-position: inside;
+	margin: 0;
+}
+
+#header .menu-container li {
+	display: block;
+	float: left;
+}
+
+#header .menu {
+	height: 63px;
+	display: block;
+	background-image: url(../img/menu_bg.png);
+	background-repeat: repeat-x;
+}
+
+#header .menu ul {
+	height: 100%;
+	display: block;
+	background-image: url(../img/menu_bg_last.png);
+	background-repeat: no-repeat;
+	background-position: top right;
+	padding-right: 149px;
+}
+
+#header .menu li {
+	height: 100%;
+	text-align: center;
+	background-image: url(../img/menu_bg_unsel.png);
+	background-repeat: no-repeat;
+}
+
+#header .menu a {
+	height: 100%;
+	display: block;
+	color: #ddd;
+	text-decoration: none;
+	font-size: 10pt;
+	line-height: 59px;
+	text-align: center;
+	padding: 0px 15px 0px 15px;
+}
+
+#header .menu li:hover {
+	background-image: url(../img/menu_bg_hover.png);
+	background-repeat: no-repeat;
+}
+
+#header .menu li:hover a {
+	color: #FFFFFF;
+}
+
+#header .menu li.current {
+	background-image: url(../img/menu_bg_current.png);
+	background-repeat: no-repeat;
+}
+
+#header .menu li.current a {
+	color: #646464;
+}
+
+
+/* Hide all the submenus but the current */
+#header .submenu ul {
+	display: none;
+}
+
+#header .submenu .current {
+	display: block;
+}
+
+#header .submenu {
+	font: bold 10px verdana,'Bitstream Vera Sans',helvetica,arial,sans-serif;
+	margin-top: 10px;
+}
+
+#header .submenu a {
+	color: #888888;
+	text-decoration: none;
+	font-size: 0.9em;
+	line-height: 15px;
+	padding:0px 5px 0px 5px;
+}
+
+#header .submenu a:hover {
+	color: #444444;
+}
+
+#header .submenu li {
+	border-left: 1px solid #DDDDDD;
+}
+
+#header .submenu li:last-child {
+	border-left: 0;
+}
+
+#header .doxytitle {
+	position: absolute;
+	font-size: 1.8em;
+	font-weight: bold;
+	color: #444444;
+	line-height: 35px;
+}
+
+#header small {
+	font-size: 0.4em;
+}
+
+#footer {
+	background-image: url(../img/foot_bg.png);
+	width: 100%;
+}
+
+#footer table {
+	width: 100%;
+	text-align: center;
+	white-space: nowrap;
+	padding: 5px 30px 5px 30px;
+	font-size: 0.8em;
+	font-family: Tahoma;
+	color: #888888;
+}
+
+#footer td.copyright {
+	width: 100%;
+}
+
+
+table.proto {
+   border: none;
+   border-bottom: 2px solid #303030;
+   border-collapse: collapse;
+   margin: 0 auto;
+   border-right: 1px solid #c7c7c7;
+   width: 100%;
+   font-size: 12px;
+}
+
+table.proto td {
+   padding: 3px 10px;
+   border-bottom: 1px solid #c7c7c7;
+   vertical-align: top;
+   background: #f7f7f7;
+   color: #707070;
+}
+
+table.proto td.arg {
+/*   background: #e7e7e7; */
+   border-left: 1px solid #303030;
+   background: #555;
+   color: #eee;
+   width: 120px;
+}
+
+table.proto tr td:hover {
+   background: #fff;
+}
+
+table.proto tr td.arg:hover {
+   background: #5f5f5f;
+}
+
+table.proto td.title {
+   background: #303030;
+   font-size: 16px;
+   color: #f7f7f7;
+   vertical-align: middle;
+   text-align: center;
+   border:1px solid #303030;
+}
+
+table.proto td.title:hover {
+   background: #3f3f3f;
+}
+
+table.proto td.invis {
+   background: none !important;
+   border: none;
+   border-bottom: 1px solid #c7c7c7;
+   cursor: default !important;
+}
+
+
+table.hex {
+   border: none;
+   margin: 0 auto;
+   border-spacing: 0px;
+   border-width: 0px;
+   border-style: outset;
+}
+
+table.hex td {
+   padding: 0px 3px 0px 3px;
+   margin: 0 auto;
+}
+
+table.hex td pre {
+   margin-top: 0px;
+   margin-bottom: 0px;
+   margin-left: 0px;
+   margin-right: 0px;
+   padding-left: 0px;
+   padding-right: 0px;
+   padding-top: 0px;
+   padding-bottom: 0px;
+}
+
+table.hex td.offset {
+   background: #f5f5f5;
+   width: 38px;
+}
+
+table.hex td.hex {
+   background: #555;
+   color: #eee;
+   width: 339px;
+}
+
+table.hex td.text {
+   background: #f5f5f5;
+   width: 112px;
+}
+
+table.hex td.title {
+   background: #303030;
+   font-size: 16px;
+   color: #f7f7f7;
+   vertical-align: middle;
+   text-align: center;
+}
+
+#doc-content .header .headertitle .title
+{
+   font-size: 300%;
+   font-family: Libertine;
+   text-align: center;
+}
+
+.author dt
+{
+   font-weight: bold;
+}
+
+.version dt
+{
+   font-weight: bold;
+}

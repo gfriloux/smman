@@ -9,15 +9,14 @@ doc-clean:
 
 doc: all
 	doxygen
-	cp img/* html/
-	rm -rf $(PACKAGE_DOCNAME).tar*
-	mkdir -p $(PACKAGE_DOCNAME)/doc
-	cp -R html/ latex/ $(PACKAGE_DOCNAME)/doc
-	tar cf $(PACKAGE_DOCNAME).tar $(PACKAGE_DOCNAME)/
-	bzip2 -9 $(PACKAGE_DOCNAME).tar
-	rm -rf $(PACKAGE_DOCNAME)/
-	mv $(PACKAGE_DOCNAME).tar.bz2 $(top_srcdir)
+	cp -fr doxygen/* html/ 2>/dev/null
 
 clean-local: doc-clean
 
-EXTRA_DIST = Doxyfile $(wildcard img/*.*) style.css head.html foot.html
+EXTRA_DIST = \
+Doxyfile \
+$(wildcard img/*.*) \
+style.css \
+head.html \
+foot.html \
+smman.dox

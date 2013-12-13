@@ -16,17 +16,6 @@
  *
  */
 
-/**
- * @file rules.c
- * @brief Functions the manipulates rules
- * @author Guillaume Friloux <kuri@efl.so>
- * @version 1.0
- *
- * @bug : Better parsing of tags (we only escape double quotes right now)
- *
- * Functions the manipulates rules
- *
- */
 #include "smman.h"
 #include "libconf.h"
 

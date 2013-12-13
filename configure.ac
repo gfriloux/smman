@@ -43,6 +43,7 @@ fi
 
 AC_CONFIG_FILES([
 Makefile
+doc/Makefile
 ])
 
 BIN_REQUIRES="eina ecore ecore-file libcurl"
@@ -56,7 +57,9 @@ AM_CONDITIONAL(ENABLE_TESTS, [test "x${enable_tests}" = "xyes"])
 
 AC_CONFIG_HEADER([config.h])
 
-AC_OUTPUT
+AC_OUTPUT([
+doc/smman.dox
+])
 
 echo
 echo

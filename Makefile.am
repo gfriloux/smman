@@ -57,6 +57,12 @@ BIN_CPPFLAGS = -I$(top_srcdir)
 
 include src/bin/Makefile.mk
 
+.PHONY: doc
+
+doc:
+	@echo "entering doc/"
+	$(MAKE) -C doc doc
+
 maintainer-clean-local:
 	rm -rf autom4te.cache
 
