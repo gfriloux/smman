@@ -17,7 +17,7 @@
  */
 
 #include "smman.h"
-#include "libconf.h"
+#include <Conf.h>
 
 struct rule *rules_temp; /**< Pointer to a rule, used so rules_load_rule_loadspec() knowns which rule rules_load_rule() is processing */
 

@@ -53,8 +53,9 @@ debian/stamp*
 EXTRA_DIST =
 
 bin_PROGRAMS =
-BIN_CPPFLAGS = -I$(top_srcdir)
+EXTRA_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/src/include/
 
+include src/lib/Makefile.mk
 include src/bin/Makefile.mk
 
 .PHONY: doc

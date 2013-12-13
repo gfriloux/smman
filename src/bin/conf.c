@@ -17,7 +17,7 @@
  */
 
 #include "smman.h"
-#include "libconf.h"
+#include <Conf.h>
 
 /**
  * @brief This function will init libconf and ask to load our configuration

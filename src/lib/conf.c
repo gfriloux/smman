@@ -65,10 +65,9 @@
  * @verbatim  gcc -o main main.c `pkg-config --cflags libconf` `pkg-config --libs libconf`  `pkg-config --cflags eina` @endverbatim
  * @verbatim  EINA_LOG_LEVEL=5 ./main /etc/docupack.conf@endverbatim
  */
-#include "libconf.h"
+#include <Conf.h>
 
 /**
- * \fn int libconfig_init(char *file, struct libconfig *myconf)
  * \brief Inits lib.
  *
  * \param file full path to configuration file
@@ -80,7 +79,7 @@ int libconfig_init(char *file, struct libconfig *myconf)
 	strcpy(myconf->file, file);
 	myconf->lconfig = NULL;
 
-	ligconfig_einadom = eina_log_domain_register("Libconf", EINA_COLOR_ORANGE);	
+	ligconfig_einadom = eina_log_domain_register("Libconf", EINA_COLOR_ORANGE);
 
 	EINA_LOG_DOM_DBG(ligconfig_einadom, "Using configuration file %s", myconf->file);
 
@@ -89,7 +88,6 @@ int libconfig_init(char *file, struct libconfig *myconf)
 
 
 /**
- * \fn int libconfig_load(struct libconfig *myconf)
  * \brief Loads configuration file to store every variable into our Eina list
  *
  * \param myconf Pointer to a libconfig structure
@@ -178,7 +176,6 @@ int libconfig_load(struct libconfig *myconf)
 }
 
 /**
- * \fn int libconfig_list(struct libconfig *myconf, int (*callback_function)(char *variable, char *value))
  * \brief Will send to a callback every entry of the Eina list
  *
  * \param myconf Pointer to a libconfig structure
@@ -197,7 +194,6 @@ int libconfig_list(struct libconfig *myconf, int (*callback_function)(char *vari
 }
 
 /**
- * \fn int libconfig_free(struct libconfig *myconf)
  * \brief Will free our eina list
  *
  * \param myconf Pointer to a libconfig structure

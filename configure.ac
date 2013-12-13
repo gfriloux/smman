@@ -3,7 +3,7 @@ m4_define([v_min], [0])
 m4_define([v_mic], [1])
 m4_define([v_ver], [v_maj.v_min.v_mic])
 
-AC_INIT([smman], [v_ver], [guillaume.friloux@aspfrance.com])
+AC_INIT([smman], [v_ver], [kuri@efl.so])
 
 AC_PREREQ(2.01)
 AC_CONFIG_SRCDIR([configure.ac])
@@ -46,8 +46,17 @@ Makefile
 doc/Makefile
 ])
 
-BIN_REQUIRES="eina ecore ecore-file libcurl"
-PKG_CHECK_MODULES(BIN, [$BIN_REQUIRES], [build_smman=yes], [build_smman=no])
+build_libs=
+LIBS_REQUIRES="eina"
+PKG_CHECK_MODULES(LIBS, [$LIBS_REQUIRES], [build_libs=yes], [build_libs=no])
+
+build_smman=
+if test "x${build_libs}" = "xyes"; then
+  BIN_REQUIRES="eina ecore ecore-file libcurl"
+  PKG_CHECK_MODULES(BIN, [$BIN_REQUIRES], [build_smman=yes], [build_smman=no])
+else
+  build_smman=no
+fi
 
 AC_DEFINE(_LARGEFILE64_SOURCE, 1, "Needed for 64 bit on 32")
 AC_DEFINE(_LARGEFILE_SOURCE, 1, "Needed for 64 bit on 32")
@@ -69,7 +78,8 @@ echo "------------------------------------------------------------------------"
 echo
 echo "Configuration Options Summary:"
 echo
-echo "  deps.........: ${build_smman}"
+echo "  libs.........: ${build_libs}"
+echo "  smman........: ${build_smman}"
 echo "  prefix.......: ${prefix}"
 echo "  tests........: ${enable_tests} (Coverage: ${efl_enable_coverage})"
 echo
