@@ -16,18 +16,9 @@
  *
  */
 
-/**
- * @file logmessages.c
- * @brief Contains functions that helps manipulating logmessage structure
- * @author Guillaume Friloux <kuri@efl.so>
- * @version 1.0
- *
- * Contains functions that helps manipulating logmessage structure
- */
-#include "logmessages.h"
+#include "smman.h"
 
 /**
- * @fn int logmessages_new(struct logmessage **new_logmessage, char *message, char *logname)
  * @brief This function will init a given logmessage structure with default values
  *
  * @param new_logmessage (struct logmessage **) struct to alloc
@@ -59,7 +50,7 @@ int logmessages_new(struct logmessage **new_logmessage, char *message, char *log
 	(*new_logmessage)->type = malloc( sizeof(char) * ( strlen(global_type) + 1 ) );
 	strcpy( (*new_logmessage)->type, global_type);
 
-	timestamp_XML( (*new_logmessage)->timestamp);
+	(*new_logmessage)->timestamp = utils_date();
 
 	(*new_logmessage)->list_tags   = NULL;
 	(*new_logmessage)->todel = 0;
@@ -67,7 +58,6 @@ int logmessages_new(struct logmessage **new_logmessage, char *message, char *log
 }
 
 /**
- * @fn int logmessages_free(struct logmessage **old_logmessage)
  * @brief This function will free everything allocated in the structure
  *
  * @param old_logmessage (struct logmessage **) struct to free
@@ -82,6 +72,7 @@ int logmessages_free(struct logmessage **old_logmessage)
 	free( (*old_logmessage)->source_path);
 	free( (*old_logmessage)->type);
 	free( (*old_logmessage)->message);
+   free( (*old_logmessage)->timestamp);
 
 	EINA_LIST_FREE( (*old_logmessage)->list_tags, ptr)
 		free(ptr);
@@ -90,7 +81,6 @@ int logmessages_free(struct logmessage **old_logmessage)
 }
 
 /**
- * @fn int logmessages_set_type(struct logmessage *mylog, char *type)
  * @brief This function will set a given type to a given logmessage structure
  *
  * @param mylog (struct logmessage *) Structure to modify
@@ -109,7 +99,6 @@ int logmessages_set_type(struct logmessage *mylog, char *type)
 }
 
 /**
- * @fn int logmessages_set_sourcehost(struct logmessage *mylog, char *source_host)
  * @brief This function will set a given host to a given logmessage structure
  *
  * @param mylog (struct logmessage *) Structure to modify
@@ -128,7 +117,6 @@ int logmessages_set_sourcehost(struct logmessage *mylog, char *source_host)
 }
 
 /**
- * @fn int logmessages_add_tag(struct logmessage *mylog, char *tag)
  * @brief This function will add tags to the given logmessage structure.
  *  Tags has to be separated by a ","
  *
@@ -169,7 +157,6 @@ int logmessages_add_tag(struct logmessage *mylog, char *tag)
 }
 
 /**
- * @fn int logmessages_set_todel(struct logmessage *mylog, int value)
  * @brief This function will set a given value to the delete field
  *
  * @param mylog (struct logmessage *) Structure to modify

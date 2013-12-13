@@ -16,20 +16,11 @@
  *
  */
 
-/**
- * @file spy.c
- * @brief Contains functions that monitors logfiles
- * @author Guillaume Friloux <kuri@efl.so>
- * @version 1.0
- *
- * @bug : In rules, use wildcards only for filenames, not directories
- *
- * Contains functions that monitors logfiles
- */
-#include "spy.h"
+#include "smman.h"
+#include <wordexp.h>
+
 
 /**
- * @fn int spy_init(void)
  * @brief Will ask rules_list() to list all rules and tell spy_addwatcher()
  *  of every found rule so we can process it and monitor matching log files
  *
@@ -42,7 +33,6 @@ int spy_init(void)
 }
 
 /**
- * @fn int spy_addwatcher(struct rule *foundrule)
  * @brief Gets a rule in param, and will check for every matching
  *  files on the system
  *
@@ -113,7 +103,6 @@ int spy_addwatcher(struct rule *foundrule)
 }
 
 /**
- * @fn int spy_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event, const char *path)
  * @brief ecore_main_loop() will call this function for every notification he gets from logfiles
  *  activity.
  *
@@ -121,7 +110,7 @@ int spy_addwatcher(struct rule *foundrule)
  * @param em (Ecore_File_Monitor *) Not really used here.
  * @param event (Ecore_File_Event) Event type
  * @param path (const char *) Name of the file that raised the event
- * 
+ *
  * @return ECORE_CALLBACK_RENEW
  */
 int spy_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event, const char *path)
@@ -229,7 +218,6 @@ int spy_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event, const 
 		{
 			if( !strcmp(new_logfile->name, path) )
 				return(ECORE_CALLBACK_RENEW);
-				
 		}
 
 		EINA_LIST_FOREACH(list_rules, l, foundrule)
@@ -289,7 +277,6 @@ int spy_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event, const 
 
 
 /**
- * @fn int spy_extract_new_lines(char *filename, fpos_t pos_cur, fpos_t *pos_new, char *message)
  * @brief Gets the new log message that has been inserted. This function kind of sucks and has to
  *  be improved to really extract all the messages and send them to a callback that will
  *  process them intead of taking only one (which can cause a problem if we don't get
@@ -299,7 +286,7 @@ int spy_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event, const 
  * @param pos_cur (fpos_t) current cursor position for this file
  * @param pos_new (fpos_t *) New position of the cursor after extracting the new message
  * @param message (char *) message extracted from the logfile
- * 
+ *
  * @return 0 or -1 if there is an error
  */
 int spy_extract_new_lines(char *filename, fpos_t pos_cur, fpos_t *pos_new, char *message)

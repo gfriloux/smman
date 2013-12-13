@@ -16,19 +16,12 @@
  *
  */
 
-/**
- * @file send.c
- * @brief Contains functions to send logs to ES
- * @author Guillaume Friloux <kuri@efl.so>
- * @version 1.0
- *
- * Contains functions to send logs to ES
- */
+#include "smman.h"
 
-#include "send.h"
+CURL *curl;
+CURLcode res;
 
 /**
- * @fn int send_logmessage(struct logmessage *new_logmessage)
  * @brief This function will receive a logmessage to index,
  *  convert it into JSON data and send it to <a href=www.elasticsearch.com>ES</a>
  *
@@ -81,7 +74,6 @@ int send_logmessage(struct logmessage *new_logmessage)
 }
 
 /**
- * @fn int send_convJSON(char *source_host, char *source_path, char *type, char *message, char *tags, char *timestamp, char **jsondata)
  * @brief This Function receives all needed vars to build the JSON data for <a href=www.elasticsearch.com>ES</a>.
  * @warning This function will malloc jsondata, so dont do it yourself, and dont forget to free it!
  *
@@ -131,7 +123,6 @@ int send_convJSON(char *source_host, char *source_path, char *type, char *messag
 
 
 /**
- * @fn char *send_escape(char *src, char **dst)
  * @brief This Function will escape all double quote so we dont get a parsing problem
  * @warning This function will malloc dst, so dont do it yourself, and dont forget to free it!
  *
@@ -161,7 +152,6 @@ char *send_escape(char *src, char **dst)
 }
 
 /**
- * @fn int send_destroy(void)
  * @brief Inits the curl object, and set necessary params
  *
  * @return 0
@@ -183,7 +173,6 @@ int send_init(void)
 }
 
 /**
- * @fn int send_destroy(void)
  * @brief Destroys the curl object
  *
  * @return 0
@@ -195,7 +184,6 @@ int send_destroy(void)
 }
 
 /**
- * @fn int send_toES(char *jsondata)
  * @brief This function will send a given JSON data to the configured
  *  JSON server
  *
@@ -248,7 +236,6 @@ int send_toES(char *jsondata)
 }
 
 /**
- * @fn static size_t send_fromES(void *ptr, size_t size, size_t nmemb, void *data)
  * @brief This fonction will get response from <a href=www.elasticsearch.com>ES</A>
  *  after sending our JSON data. This function is a callback used by libcurl
  *

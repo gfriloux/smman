@@ -6,7 +6,7 @@ src/bin/smman
 
 src_bin_smman_SOURCES = \
 src/bin/conf.c \
-src/bin/date.c \
+src/bin/utils.c \
 src/bin/libconf.c \
 src/bin/logfiles.c \
 src/bin/logmessages.c \

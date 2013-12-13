@@ -16,18 +16,10 @@
  *
  */
 
-/**
- * @file conf.c
- * @brief Manages configuration loading
- * @author Guillaume Friloux <kuri@efl.so>
- * @version 1.0
- *
- * Manages configuration loading
- */
-#include "conf.h"
+#include "smman.h"
+#include "libconf.h"
 
 /**
- * @fn int conf_load(void)
  * @brief This function will init libconf and ask to load our configuration
  *  file
  *
@@ -59,7 +51,6 @@ int conf_load(void)
 }
 
 /**
- * @fn int conf_load_var(char *variable, char *value)
  * @brief This function is a callback for libconf, and receives a variable +
  *  its value found in a configuration file
  *

@@ -16,151 +16,62 @@
  *
  */
 
-/**
- * @file main.c
- * @brief Main functions
- * @author Guillaume Friloux <kuri@efl.so>
- * @version 1.0
- *
- * @todo make an exit if receiving SIGUSR1 so we never kill -9 it
- * @todo Index all received messages in an EET file so we dont loose them
- *  if ES is down, if we have a network problem or if we get killed
- *
- * Main functions
- *
- */
+#include "smman.h"
 
-/**
- * @mainpage Syslog Message MANager
- *
- * @author Guillaume Friloux <kuri@efl.so>
- *
- * @section INTRODUCTION Introduction
- * SMMan is gateway between syslog files and an <a href=http://www.elasticsearch.com>ElasticSearch</a> database.<br />
- * SMMan has a few more interesting stuff : He can tag every log he sees by using defined rules on them.<br />
- * SMMan uses a configuration file, and needs rules files that must be written by the user of SMMan.<br />
- * SMMan will then use these rules to monitor all the specified logfiles (using inotify), and extract every new entry
- * to filter it using the rules and then indexing it in the configured <a href=http://www.elasticsearch.com>ElasticSearch</a> database.
- * <img src=intro.png>
- *
- * <br />
- * @section CONFIGURATION Configuration
- * The configuration file has to be in <b>/etc/smman/smman.conf</b><br />
- * For now, there is only 3 configurable variables :
- * @li @b server : URL to <a href=http://www.elasticsearch.com>ElasticSearch</a> database. SMMan speaks to <a href=http://www.elasticsearch.com>ElasticSearch</a> using JSON.
- * @li @b host : Allows you to set a different host that the one returned by command hostname (optionnal).
- * @li @b type : Default type for all logs (optionnal).
- *
- *
- * Exemple of configuration file : <br />
- * @code
- * server = http://localhost:9200/logstash/logs/
- * host = BlackStar
- * type = syslog
- * @endcode
- *
- * <br />
- * @section RULES Writing rules
- * Writing rules is quite easy. SMMan search for rules in <b>/etc/smman/rules.d/</b><br />
- * Check the rules directory in the source code to see examples of rules.<br />
- * Basically, rules allows you to write matches about filenames or messages (using globbing/regexp), and set informations like :
- * @li source_host : Set a custom hostname
- * @li type : Set a custom type
- * @li tags : Add tags to the message
- * @li delete : Do not index the log, just drop it
- *
- * <br />
- * @section LOGSTASH Why not using logstash ?
- * @li Its written in ruby and i know nothing to ruby (so i cant modify anything).
- * @li I have been able to make it crash just by deleting a monitored file, or by
- * sending chars like éàè.
- * @li I seem to be too stupid to understand how to automatically tag messages (using Grok, which adds a dependancy seemed complicated to me).
- */
-#include "main.h"
-
-/**
- * @fn int main(int argc, char **argv)
- * @brief Main function, will launch all needed functions
- *
- * @param argc args count
- * @param argv args
- *
- * @return 0, exit should not happen
- */
-int main(int argc, char **argv)
+void _usage(char *progname)
 {
-	int c;
-	eina_init();
-	ecore_init();
-	ecore_file_init();
-	//send_init();
-
-	send_connected = EINA_FALSE;
-
-	while( 1 )
-	{
-		int option_index = 0;
-
-		static struct option long_options[] = {
-		   {"help", 0, 0, 'h'},
-		   {0, 0, 0, 0}
-		};
-
-		c = getopt_long(argc, argv, "h", long_options, &option_index);
-		if (c == -1) break;
-
-		switch (c)
-		{
-			case 'h':
-				usage(argv[0]);
-				exit(0);
-			default:
-				break;
-		}
-	}
-
-	// Read conf
-	conf_load();
-
-	// Load rules
-	rules_load();
-
-	// We show the list of loaded rules
-	// Unecessary
-	rules_print();
-
-	// Begin to spy files
-	spy_init();
-
-	// We show the list of files we will watch
-	// Unecessary
-	logfiles_print();
-
-	// We wait for events (new inserts in logfiles)
-	ecore_main_loop_begin();
-
-	return(0);
+   printf("  _______                                   \n");
+   printf(" |   _   |.--------..--------..---.-..-----.\n");
+   printf(" |   1___||        ||        ||  _  ||     |\n");
+   printf(" |____   ||__|__|__||__|__|__||___._||__|__|\n");
+   printf(" |:  1   |                                  \n");
+   printf(" |::.. . |    Usage for %s :                \n", progname);
+   printf(" `-------'                                  \n");
+   printf("\t--help\t\t-h :\tShow this help screen\n");
+   printf("\t--version\t-v :\tShow revision version\n");
+   printf("\n");
+   printf("\tDebugging : \n");
+   printf("\t\tEINA_LOG_LEVEL=5 %s\n", progname);
 }
 
-/**
- * @fn void usage(char *progname)
- * @brief displays basic usage
- * http://patorjk.com/software/taag/  Cricket font
- *
- * @param progname (char *) Name of program
- */
-void usage(char *progname)
+int main(int argc, char **argv)
 {
-	printf("  _______                                   \n");
-	printf(" |   _   |.--------..--------..---.-..-----.\n");
-	printf(" |   1___||        ||        ||  _  ||     |\n");
-	printf(" |____   ||__|__|__||__|__|__||___._||__|__|\n");
-	printf(" |:  1   |                                  \n");
-	printf(" |::.. . |    Usage for %s :                \n", progname);
-	printf(" `-------'                                  \n");
-	printf("\t--help\t\t-h :\tShow this help screen\n");
-	printf("\t--version\t-v :\tShow revision version\n");
-	printf("\n");
-	printf("\tDebugging : \n");
-	printf("\t\tEINA_LOG_LEVEL=5 %s\n", progname);
+   int c;
+   eina_init();
+   ecore_init();
+   ecore_file_init();
+
+   send_connected = EINA_FALSE;
+
+   while (1)
+     {
+        int option_index = 0;
+
+        static struct option long_options[] = {
+           {"help", 0, 0, 'h'},
+           {0, 0, 0, 0}
+        };
+
+        c = getopt_long(argc, argv, "h", long_options, &option_index);
+        if (c == -1) break;
+
+        switch (c)
+          {
+           case 'h':
+              _usage(argv[0]);
+              exit(0);
+           default:
+              break;
+          }
+     }
+
+   conf_load();
+   rules_load();
+   rules_print();
+   spy_init();
+   logfiles_print();
+
+   ecore_main_loop_begin();
+
+   return 0;
 }

@@ -16,25 +16,14 @@
  *
  */
 
-/**
- * @file logfiles.c
- * @brief Manages log files list
- * @author Guillaume Friloux <kuri@efl.so>
- * @version 1.0
- *
- * Manages log files list
- * @see logfile
- * @see list_logfiles
- */
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
 
-#include "logfiles.h"
+#include "smman.h"
 
 /**
- * @fn int logfiles_exist(char *logfile)
  * @brief Checks in the list of log files we are watching if we
  *  already watch a given logfile
  *
@@ -58,7 +47,6 @@ int logfiles_exist(char *logfile)
 }
 
 /**
- * @fn int logfiles_add(struct logfile *new_logfile)
  * @brief Adds a logfile struct inside the logfiles list
  *
  * @param new_logfile (struct logfile *) structure to add
@@ -72,7 +60,6 @@ int logfiles_add(struct logfile *new_logfile)
 }
 
 /**
- * @fn int logfiles_print(void)
  * @brief Prints on stdout the list of logfiles. Only usefull for a bit of
  *  monitoring of what is going on
  *
@@ -90,7 +77,6 @@ int logfiles_print(void)
 }
 
 /**
- * @fn int logfiles_new(struct logfile **new_logfile, char *filename, fpos_t cursor, unsigned long long int filesize)
  * @brief Will alloc a new logfile structure and set given values
  *
  * @param new_logfile (struct logfile *) structure to alloc
@@ -112,7 +98,6 @@ int logfiles_new(struct logfile **new_logfile, char *filename, fpos_t cursor, un
 }
 
 /**
- * @fn int logfiles_del(struct logfile **old_logfile)
  * @brief This function will free an allocated logfile structure
  *
  * @param old_logfile (struct logfile **) structure to free
@@ -132,7 +117,6 @@ int logfiles_del(struct logfile **old_logfile)
 }
 
 /**
- * @fn int logfiles_getend(char *logfile, fpos_t *pos_end)
  * @brief This function will get a cursor to the end of the file
  *
  * @param logfile (char *) logfile involved
@@ -159,7 +143,6 @@ int logfiles_getend(char *logfile, fpos_t *pos_end)
 }
 
 /**
- * @fn int logfiles_getbegin(char *logfile, fpos_t *pos_begin)
  * @brief This function will get a cursor to the begin of the file
  *
  * @param logfile (char *) logfile involved
@@ -185,7 +168,6 @@ int logfiles_getbegin(char *logfile, fpos_t *pos_begin)
 }
 
 /**
- * @fn int logfiles_getsize(char *logfile, unsigned long long int *filesize)
  * @brief This function will get the size of a file
  *
  * @param logfile (char *) logfile involved

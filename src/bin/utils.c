@@ -16,32 +16,32 @@
  *
  */
 
-/**
- * @file date.c
- * @brief Gets us the current date, like logstash does
- * @author Guillaume Friloux <kuri@efl.so>
- * @version 1.0
- *
- * Gets us the current date, like logstash does
- */
-
-#include "date.h"
+#include "smman.h"
+#include <time.h>
+#include <stdio.h>
 
 /**
- * @fn char * timestamp_XML(char * date)
- * @brief Gets us the current date, like logstash does
- * @bug it doesnt get us date in UTC format, it gets us date on the system
+ * @brief Gets us the current date, in the same format as logstash.
  *
- * @param date (char *) Buffer where we will store the date
- *
- * @return 0
+ * @return Pointer to the date's string, or NULL if an error
+ *         occured.
  */
-char * timestamp_XML(char * date)
+char *
+utils_date(void)
 {
-	time_t temps;
-	struct tm temp;
-	temps=time(NULL);
-	localtime_r(&temps,&temp);
-	sprintf(date,"%04d-%02d-%02dT%02d:%02d:%02d.000000Z",(temp.tm_year)+1900,(temp.tm_mon)+1,temp.tm_mday,temp.tm_hour,temp.tm_min,temp.tm_sec);
-	return(date);
+   char *s;
+   time_t temps;
+   struct tm temp;
+
+   temps = time(NULL);
+   if (!localtime_r(&temps,&temp))
+     return NULL;
+
+   s = calloc(1, 28);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(s, NULL);
+
+   sprintf(s,"%04d-%02d-%02dT%02d:%02d:%02d.000000Z",
+           (temp.tm_year)+1900,(temp.tm_mon)+1,temp.tm_mday,
+           temp.tm_hour,temp.tm_min,temp.tm_sec);
+   return s;
 }
