@@ -1,6 +1,15 @@
 #include "spy_private.h"
 
 static void
+_spy_file_event(void *data)
+{
+   Spy_Line *sl;
+
+   sl = data;
+   ecore_event_add(SPY_EVENT_LINE, sl, _spy_file_line_free, sl);
+}
+
+static void
 _spy_file_job(void *data)
 {
    spy_file_poll(data);
@@ -50,7 +59,7 @@ _spy_file_line_extract(Spy_File *sf)
 
         sl->sf = sf;
         sl->line = line;
-        ecore_event_add(SPY_EVENT_LINE, sl, _spy_file_line_free, sl);
+        ecore_main_loop_thread_safe_call_async(_spy_file_event, sl);
         end:
         p = p1 + 1;
      }
