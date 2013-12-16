@@ -115,12 +115,6 @@ spy_init(void)
         goto unregister_log_domain;
      }
 
-   if (!eio_init())
-     {
-        ERR("Can not initialize Eio");
-        goto shutdown_ecore;
-     }
-
    SPY_EVENT_LINE = ecore_event_type_new();
 
    return _spy_init_count;
