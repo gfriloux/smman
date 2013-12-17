@@ -1,66 +1,16 @@
-/*
- * Copyright © 2013 Guillaume Friloux <kuri@efl.so>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
-
-/**
- * @file libconf.h
- * @brief Contains structs and prototypes of libconf
- * @author Guillaume Friloux <kuri@efl.so>
- * @version 1.0
- *
- * Contains structs and prototypes of libconf
- *
- */
-
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <errno.h>
+#ifndef CONF_H
+#define CONF_H
 #include <Eina.h>
+#include <Ecore.h>
+#include <Eio.h>
 
-#ifndef LIBCONFVARS
-#define LIBCONFVARS
-/**
- * \struct libconfig
- * \brief Main structure
- */
-struct libconfig
-{
-	char file[512];				/**< Name of config file */
-	Eina_List *lconfig;			/**< List of variables */
-};
+typedef struct _Conf Conf;
 
-/**
- * \struct libconfig_entry
- * \brief Structure containing information about one config entry
- */
-struct libconfig_entry
-{
-	char *var,					/**< Variable name */
-	     *value;				/**< Value for this variable */
-};
+typedef void (*Conf_Done_Cb)(void *data, Conf *conf);
+typedef void (*Conf_Error_Cb)(void *data, Conf *conf, const char *errstr);
 
-int ligconfig_einadom;			/**< Eina DOM to use for eina logs */
+Eina_Hash * conf_variables_get(Conf *conf);
+Eina_Bool conf_load(char *file, Conf_Done_Cb done_cb, Conf_Error_Cb error_cb, const void *data);
+int conf_init(void);
+int conf_shutdown(void);
 #endif
-
-int libconfig_init(char *file, struct libconfig *myconf);
-int libconfig_load(struct libconfig *myconf);
-int libconfig_list(struct libconfig *myconf, int (*callback_function)(char *variable, char *value));
-int libconfig_free(struct libconfig *myconf);
-void libconfig_version(char *version);
