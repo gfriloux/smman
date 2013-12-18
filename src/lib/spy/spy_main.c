@@ -35,6 +35,20 @@ spy_free(Spy *spy)
 }
 
 Spy_File *
+spy_file_get(Spy *spy, const char *file)
+{
+   Spy_File *sf;
+
+   EINA_INLIST_FOREACH(spy->files, sf)
+     {
+        if (!strcmp(sf->name, file))
+          return sf;
+     }
+
+   return NULL;
+}
+
+Spy_File *
 spy_file_new(Spy *spy, const char *file)
 {
    Spy_File *sf;
@@ -119,8 +133,6 @@ spy_init(void)
 
    return _spy_init_count;
 
-shutdown_ecore:
-   ecore_shutdown();
 unregister_log_domain:
    eina_log_domain_unregister(_spy_log_dom_global);
    _spy_log_dom_global = -1;

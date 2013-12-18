@@ -52,7 +52,7 @@ PKG_CHECK_MODULES(LIBS, [$LIBS_REQUIRES], [build_libs=yes], [build_libs=no])
 
 build_smman=
 if test "x${build_libs}" = "xyes"; then
-  BIN_REQUIRES="eina ecore ecore-file libcurl"
+  BIN_REQUIRES="${LIBS_REQUIRES}"
   PKG_CHECK_MODULES(BIN, [$BIN_REQUIRES], [build_smman=yes], [build_smman=no])
 else
   build_smman=no

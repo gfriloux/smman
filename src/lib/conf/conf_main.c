@@ -147,6 +147,7 @@ conf_shutdown(void)
    if (--_conf_init_count != 0)
      return _conf_init_count;
 
+   eio_shutdown();
    ecore_shutdown();
    eina_log_domain_unregister(_conf_log_dom_global);
    _conf_log_dom_global = -1;

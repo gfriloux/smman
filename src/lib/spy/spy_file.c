@@ -1,5 +1,15 @@
 #include "spy_private.h"
 
+void
+_spy_file_line_free(void *d1,
+                    void *d2 EINA_UNUSED)
+{
+   Spy_Line *sl = d1;
+
+   free((char *)sl->line);
+   free(sl);
+}
+
 static void
 _spy_file_event(void *data)
 {
@@ -13,16 +23,6 @@ static void
 _spy_file_job(void *data)
 {
    spy_file_poll(data);
-}
-
-void
-_spy_file_line_free(void *d1,
-                    void *d2 EINA_UNUSED)
-{
-   Spy_Line *sl = d1;
-
-   free((char *)sl->line);
-   free(sl);
 }
 
 void
@@ -149,7 +149,6 @@ spy_file_poll(void *data)
      }
 
    size = st.st_size;
-DBG("size=%zu", size);
    if (sf->poll.size == size)
      return EINA_TRUE;
 
@@ -164,12 +163,7 @@ DBG("size=%zu", size);
      }
 
    /* We have data to read! */
-   DBG("spy_file[%p] File activity!", sf);
-
    toread = size - sf->poll.size;
-
-   DBG("spy_file[%p] len_old=%zu len_new=%zu toread=%zu",
-       sf, sf->poll.size, size, toread);
 
    sf->read.offset = sf->poll.size;
    sf->read.length = toread;
