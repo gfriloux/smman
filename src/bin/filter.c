@@ -5,16 +5,26 @@ filter_load(void *data,
             Rules *rules,
             Rule *rule)
 {
+   Smman *smman;
 
+   smman = data;
+   if (smman->rules != rules)
+     return;
 
+   DBG("smman[%p] rules[%p] rule[%p][%s]", smman, rules, rule, rule->name);
 }
 
 void
 filter_load_done(void *data,
                  Rules *rules)
 {
+   Smman *smman;
 
+   smman = data;
+   if (smman->rules != rules)
+     return;
 
+   DBG("smman[%p] rules[%p]", smman, rules);
 }
 
 

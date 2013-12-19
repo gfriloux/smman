@@ -10,6 +10,7 @@ rules_new(const char *directory)
 
    rules = calloc(1, sizeof(Rules));
    rules->directory = strdup(directory);
+   return rules;
 }
 
 Eina_Bool

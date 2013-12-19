@@ -1,6 +1,4 @@
 #include <Rules.h>
-#include <sys/types.h>
-#include <regex.h>
 
 extern int _rules_log_dom_global;
 
@@ -15,30 +13,6 @@ struct _Rules
    const char *directory;
    Eina_Inlist *rules;
 };
-
-struct _Rule
-{
-   EINA_INLIST;
-   const char *name;
-
-   struct
-   {
-      const char *filename,
-                 *type,
-                 *source_host,
-                 *source_path,
-                 *tags;
-      Eina_Bool todel;
-      Eina_Inlist *regex;
-   } spec;
-};
-
-typedef struct _Rule_Regex
-{
-   const char *regex;
-   Eina_Bool must_match;
-   regex_t preg;
-} Rule_Regex;
 
 typedef struct _Rules_Load
 {
