@@ -3,6 +3,26 @@
 static int _rules_init_count = 0;
 int _rules_log_dom_global = -1;
 
+
+void
+rules_rule_free(Rule *rule)
+{
+   Rule_Regex *rr;
+   EINA_SAFETY_ON_NULL_RETURN(rule);
+
+   free((char *)rule->name);
+   free((char *)rule->spec.filename);
+   free((char *)rule->spec.source_host);
+   free((char *)rule->spec.source_path);
+   free((char *)rule->spec.tags);
+
+   EINA_INLIST_FOREACH(rule->spec.regex, rr)
+     {
+        free((char *)rr->regex);
+        free(rr);
+     }
+}
+
 Rules *
 rules_new(const char *directory)
 {

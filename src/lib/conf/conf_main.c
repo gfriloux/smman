@@ -3,9 +3,17 @@
 static int _conf_init_count = 0;
 int _conf_log_dom_global = -1;
 
+const char *
+conf_file_get(Conf *conf)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(conf, NULL);
+   return conf->file;
+}
+
 Eina_Hash *
 conf_variables_get(Conf *conf)
 {
+   EINA_SAFETY_ON_NULL_RETURN_VAL(conf, NULL);
    return conf->variables;
 }
 

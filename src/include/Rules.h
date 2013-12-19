@@ -19,7 +19,6 @@ struct _Rule
    struct
    {
       const char *filename,
-                 *type,
                  *source_host,
                  *source_path,
                  *tags;

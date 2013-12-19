@@ -12,6 +12,12 @@ filter_load(void *data,
      return;
 
    DBG("smman[%p] rules[%p] rule[%p][%s]", smman, rules, rule, rule->name);
+
+   DBG("rule : %s\n\tfilename[%s]\n\tsource_host[%s]\n\t"
+       "source_path[%s]\n\ttags[%s]\n\ttodel[%s]",
+       rule->name, rule->spec.filename, rule->spec.source_host,
+       rule->spec.source_path, rule->spec.tags,
+       (rule->spec.todel) ? "EINA_TRUE" : "EINA_FALSE");
 }
 
 void
