@@ -48,7 +48,7 @@ init(void)
 {
    Smman *smman;
 
-   smman_log_dom_global = eina_log_domain_register("smman", EINA_COLOR_YELLOW);
+   smman_log_dom_global = eina_log_domain_register("smman", EINA_COLOR_CYAN);
    if (smman_log_dom_global < 0)
      {
         EINA_LOG_ERR("Smman can not create a general log domain");
@@ -69,6 +69,14 @@ init(void)
         return NULL;
      }
 
+   smman->spy = spy_new();
+   if (!smman->spy)
+     {
+        ERR("Failed to create new spy");
+        return NULL;
+     }
+
+   smman->ev.sl = ecore_event_handler_add(SPY_EVENT_LINE,log_line_event, smman);
    return smman;
 }
 
@@ -103,6 +111,7 @@ int main(int argc, char **argv)
 
    conf_init();
    rules_init();
+   spy_init();
 
    smman = init();
    if (!smman)

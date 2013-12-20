@@ -27,8 +27,6 @@ typedef struct _Rules_Load
    } cb;
 } Rules_Load;
 
-void rules_rule_free(Rule *rule);
-
 Eina_Bool rules_load_ls_filter(void *data, Eio_File *handler, const Eina_File_Direct_Info *info);
 void rules_load_ls(void *data, Eio_File *handler, const Eina_File_Direct_Info *info);
 void rules_load_ls_done(void *data, Eio_File *handler);

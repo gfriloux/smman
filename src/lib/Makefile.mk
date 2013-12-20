@@ -14,8 +14,9 @@ src_lib_libconf_la_CFLAGS = $(LIBS_CFLAGS) $(EXTRA_CPPFLAGS)
 src_lib_libconf_la_LDFLAGS = $(LIBS_LIBS)
 
 src_lib_libspy_la_SOURCES = \
-src/lib/spy/spy_file.c \
 src/lib/spy/spy_main.c \
+src/lib/spy/spy_file.c \
+src/lib/spy/spy_line.c \
 src/lib/spy/spy_private.h \
 src/include/Spy.h
 src_lib_libspy_la_CFLAGS = $(LIBS_CFLAGS) $(EXTRA_CPPFLAGS)

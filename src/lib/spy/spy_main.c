@@ -90,7 +90,7 @@ spy_file_new(Spy *spy, const char *file)
      }
 
    sf->poll.size = st.st_size;
-   sf->poll.timer = ecore_timer_add(5.0, spy_file_poll, sf);
+   sf->poll.timer = ecore_timer_add(0.3, spy_file_poll, sf);
 
    spy->files = eina_inlist_append(spy->files, EINA_INLIST_GET(sf));
    DBG("spy_file[%p] size[%zd]", sf, st.st_size);

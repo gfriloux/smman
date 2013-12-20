@@ -87,7 +87,7 @@ _spy_file_cb(void *data,
         return;
      }
 
-   fseeko(sf->read.fd, sf->read.offset, SEEK_SET);
+   fseeko(sf->read.fd, sf->read.offset - 1, SEEK_SET);
    left = sf->read.length;
 
    while (nbr != (size_t)sf->read.length)
@@ -185,15 +185,9 @@ spy_file_poll(void *data)
 }
 
 const char *
-spy_line_get(Spy_Line *sl)
-{
-   return sl->line;
-}
-
-
-const char *
 spy_file_name_get(Spy_File *sf)
 {
+   EINA_SAFETY_ON_NULL_RETURN_VAL(sf, NULL);
    return sf->name;
 }
 
@@ -204,8 +198,9 @@ spy_file_data_set(Spy_File *sf,
    sf->data = (const void *)data;
 }
 
-const void *
+void *
 spy_file_data_get(Spy_File *sf)
 {
-   return sf->data;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(sf, NULL);
+   return (void *)sf->data;
 }
