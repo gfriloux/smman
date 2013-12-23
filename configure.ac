@@ -48,7 +48,7 @@ doc/Makefile
 ])
 
 build_libs=
-LIBS_REQUIRES="eina ecore eio"
+LIBS_REQUIRES="eina ecore ecore-con eio"
 PKG_CHECK_MODULES(LIBS, [$LIBS_REQUIRES], [build_libs=yes], [build_libs=no])
 
 build_smman=
