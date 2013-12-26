@@ -34,7 +34,23 @@ rules_load_rule(void *data,
         if (!strcmp(variable, "filename"))
           rule->spec.filename = strdup(value);
         else if (!strcmp(variable, "tags"))
-          rule->spec.tags = strdup(value);
+          {
+             char **tags = eina_str_split(value, ",", 0);
+             int i;
+
+             for (i = 0; tags[i]; i++)
+               {
+                  Eina_Strbuf *buf = eina_strbuf_new();
+
+                  eina_strbuf_append(buf, tags[i]);
+                  eina_strbuf_trim(buf);
+                  rule->spec.tags = eina_list_append(rule->spec.tags,
+                                                 eina_strbuf_string_steal(buf));
+                  eina_strbuf_free(buf);
+               }
+             free(tags[0]);
+             free(tags);
+          }
         else if (!strcmp(variable, "source_host"))
           rule->spec.source_host = strdup(value);
         else if (!strcmp(variable, "source_path"))
