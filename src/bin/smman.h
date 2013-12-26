@@ -9,6 +9,8 @@
 #include <Conf.h>
 #include <Rules.h>
 #include <Spy.h>
+#include <Store.h>
+#include <cJSON.h>
 
 int smman_log_dom_global;
 
@@ -16,6 +18,7 @@ typedef struct _Smman
 {
    Rules *rules;
    Spy *spy;
+   Store *store;
    Eina_Inlist *filters;
 
    struct
@@ -52,3 +55,6 @@ void filter_load_done(void *data, Rules *rules);
 void filter_load_error(void *data, Rules *rules, const char *errstr);
 
 Eina_Bool log_line_event(void *data, int type, void *event);
+
+char * sdupf(const char *s, ...);
+char * date_es(void);

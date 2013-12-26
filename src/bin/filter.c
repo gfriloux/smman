@@ -40,10 +40,9 @@ filter_load(void *data,
    DBG("smman[%p] rules[%p] rule[%p][%s]", smman, rules, rule, rule->name);
 
    DBG("rule : %s\n\tfilename[%s]\n\tsource_host[%s]\n\t"
-       "source_path[%s]\n\ttags[%s]\n\ttodel[%s]",
+       "source_path[%s]\ntodel[%s]",
        rule->name, rule->spec.filename, rule->spec.source_host,
-       rule->spec.source_path, rule->spec.tags,
-       (rule->spec.todel) ? "EINA_TRUE" : "EINA_FALSE");
+       rule->spec.source_path, (rule->spec.todel) ? "EINA_TRUE" : "EINA_FALSE");
 
    /* Loop with globbing to write here! */
    r = glob(rule->spec.filename, GLOB_MARK, 0, &files);
@@ -65,6 +64,13 @@ filter_load(void *data,
         DBG("No filter found for %s, creating new one", *s);
         filter = calloc(1, sizeof(Filter));
         filter->sf = spy_file_new(smman->spy, *s);
+        if (!filter->sf)
+          {
+             ERR("Failed to put spy on %s", *s);
+             free(filter);
+             continue;
+          }
+
         spy_file_data_set(filter->sf, filter);
         filter->filename = strdup(*s);
         filter->rules = eina_hash_string_superfast_new(_filter_rules_free);
@@ -76,6 +82,7 @@ filter_load(void *data,
             rule, rule->name, filter, filter->filename);
         eina_hash_add(filter->rules, rule->name, rule);
      }
+   globfree(&files);
 }
 
 void

@@ -28,6 +28,8 @@ config_done(void *data,
    DBG("Server = %s", smman->cfg.server);
    DBG("Host = %s", smman->cfg.host);
    eina_iterator_free(it);
+
+   smman->store = store_new(smman->cfg.server);
 }
 
 void

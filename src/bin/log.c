@@ -6,9 +6,74 @@ typedef struct _Log
               *source_host,
               *source_path,
               *message;
-   Eina_Strbuf *tags;
+   Eina_List *tags;
    Eina_Bool todel;
 } Log;
+
+void
+_log_send(Smman *smman,
+          Log *log)
+{
+   cJSON *json,
+         *json_tags;
+   char *source,
+        *date,
+        *tag;
+   Eina_List *l;
+
+   json = cJSON_CreateObject();
+   if (!json)
+     {
+        ERR("Failed to allocate JSON object");
+        return;
+     }
+
+   source = sdupf("file://%s%s", smman->cfg.server, log->source_path);
+   EINA_SAFETY_ON_NULL_RETURN(source);
+
+   date = date_es();
+   EINA_SAFETY_ON_NULL_RETURN(date);
+
+
+   cJSON_AddStringToObject(json, "@source", source);
+   cJSON_AddStringToObject(json, "@type", "syslog");
+
+   json_tags = cJSON_CreateArray();
+   cJSON_AddItemToObject(json, "tags", json_tags);
+
+   EINA_LIST_FOREACH(log->tags, l, tag)
+     {
+        cJSON_AddItemToArray(json_tags, cJSON_CreateString(tag));
+     }
+
+   cJSON_AddItemToObject(json, "fields", cJSON_CreateObject());
+
+   cJSON_AddStringToObject(json, "@message", log->message);
+   cJSON_AddStringToObject(json, "@timestamp", date);
+   cJSON_AddStringToObject(json, "@source_host", log->source_host);
+   cJSON_AddStringToObject(json, "@source_path", log->source_path);
+
+
+   free(date);
+   free(source);
+   DBG("JSON = \n%s", cJSON_Print(json));
+   cJSON_Delete(json);
+}
+
+void
+_log_free(Log *log)
+{
+   char *tag;
+
+   eina_stringshare_replace(&log->filename, NULL);
+   eina_stringshare_replace(&log->source_host, NULL);
+   eina_stringshare_replace(&log->source_path, NULL);
+   eina_stringshare_replace(&log->message, NULL);
+
+   EINA_LIST_FREE(log->tags, tag)
+     free(tag);
+   free(log);
+}
 
 Eina_Bool
 _log_line_match(const char *log, Rule *rule)
@@ -47,6 +112,7 @@ log_line_event(void *data,
    Eina_Iterator *it;
    Eina_Hash_Tuple *t;
    Eina_Bool r;
+   const char *tag;
 
    DBG("smman[%p] sl[%p][%s] filter[%p][%s]",
        smman, sl, spy_file_name_get(sf), filter, filter->filename);
@@ -56,13 +122,13 @@ log_line_event(void *data,
    eina_stringshare_replace(&log->filename, filter->filename);
    eina_stringshare_replace(&log->source_host, smman->cfg.host);
    eina_stringshare_replace(&log->source_path, filter->filename);
-   log->tags = eina_strbuf_new();
 
    /* Now we apply rules */
    it = eina_hash_iterator_tuple_new(filter->rules);
    while (eina_iterator_next(it, (void **)&t))
      {
         const char *name;
+        Eina_List *l;
 
         name = t->key;
         rule = t->data;
@@ -84,12 +150,8 @@ log_line_event(void *data,
         if (rule->spec.source_path)
           eina_stringshare_replace(&log->source_path, rule->spec.source_path);
 
-        if (rule->spec.tags)
-          {
-             if (eina_strbuf_length_get(log->tags))
-               eina_strbuf_append(log->tags, ",");
-             eina_strbuf_append(log->tags, rule->spec.tags);
-          }
+        EINA_LIST_FOREACH(rule->spec.tags, l, tag)
+          log->tags = eina_list_append(log->tags, strdup(tag));
      }
    eina_iterator_free(it);
 
@@ -101,13 +163,14 @@ log_line_event(void *data,
        "\tmessage = %s\n"
        "\tfilename = %s\n"
        "\tsource_host = %s\n"
-       "\tsource_path = %s\n"
-       "\ttags = %s\n",
+       "\tsource_path = %s",
        log->message,
        log->filename,
        log->source_host,
-       log->source_path,
-       eina_strbuf_string_get(log->tags));
+       log->source_path);
 
+   _log_send(smman, log);
+
+   _log_free(log);
    return EINA_TRUE;
 }
