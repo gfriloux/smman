@@ -20,8 +20,8 @@ struct _Rule
    {
       const char *filename,
                  *source_host,
-                 *source_path,
-                 *tags;
+                 *source_path;
+      Eina_List *tags;
       Eina_Bool todel;
       Eina_Inlist *regex;
    } spec;
