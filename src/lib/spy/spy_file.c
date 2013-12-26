@@ -1,5 +1,10 @@
 #include "spy_private.h"
 
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 void
 _spy_file_line_free(void *d1,
                     void *d2 EINA_UNUSED)
@@ -28,85 +33,82 @@ _spy_file_job(void *data)
 void
 _spy_file_line_extract(Spy_File *sf)
 {
-   const char *s,
-              *p,
-              *p1;
-   size_t rm = 0;
    Spy_Line *sl;
 
-   s = eina_strbuf_string_get(sf->read.buf);
-   p = s;
+   DBG("sf[%p]", sf);
 
-   while ((p1=strchr(p, '\n')))
+   while (1)
      {
-        size_t l = p1 - p;
-        char *line;
+        if (!eina_strbuf_length_get(sf->read.buf))
+          break;
 
-        rm += l;
+        sf->extract.s = eina_strbuf_string_get(sf->read.buf);
+        sf->extract.p = strchr(sf->extract.s, '\n');
+        if (!sf->extract.p)
+          break;
 
-        if (!l)
-          goto end;
+        if (sf->extract.p == sf->extract.s)
+          {
+             eina_strbuf_remove(sf->read.buf, 0, 1);
+             continue;
+          }
 
-        line = strndup(p, l);
+        sf->extract.l = sf->extract.p - sf->extract.s;
 
-        DBG("Line = %s len=%zd", line, l);
         sl = calloc(1, sizeof(Spy_Line));
         if (!sl)
           {
              ERR("Failed to allocate Spy_Line");
-             free(line);
+             return;
           }
 
         sl->sf = sf;
-        sl->line = line;
+        sl->line = strndup(sf->extract.s, sf->extract.l);
         ecore_main_loop_thread_safe_call_async(_spy_file_event, sl);
-        end:
-        p = p1 + 1;
+        eina_strbuf_remove(sf->read.buf, 0, sf->extract.l);
      }
-
-   eina_strbuf_remove(sf->read.buf, 0, rm);
 }
 
 void
 _spy_file_cb(void *data,
              Ecore_Thread *thread EINA_UNUSED)
 {
-   Spy_File *sf;
-   size_t nbr = 0,
-          toread = 0,
-          left = 0;
-   char buf[512];
+   Spy_File *sf = data;
 
    sf = data;
    DBG("sf[%p]", sf);
 
-   sf->read.fd = fopen(sf->name, "r");
-   if (!sf->read.fd)
+   sf->read.nbr = 0;
+
+   sf->read.fd = open(sf->name, O_RDONLY);
+   if (sf->read.fd == -1)
      {
         ERR("Failed to open %s : %s", sf->name, strerror(errno));
         return;
      }
 
-   fseeko(sf->read.fd, sf->read.offset - 1, SEEK_SET);
-   left = sf->read.length;
+   sf->read.databuf = calloc(1, sf->read.length + 1);
 
-   while (nbr != (size_t)sf->read.length)
+   errno = 0;
+   sf->read.nbr = pread(sf->read.fd, sf->read.databuf,
+                        sf->read.length, sf->read.offset);
+   if (sf->read.nbr == -1)
      {
-        toread = (left < 512) ? left : 512;
-
-        if (fread(buf, toread, 1, sf->read.fd) != 1)
-          {
-             ERR("Error while reading file %s : %s",
-                 sf->name, strerror(errno));
-             fclose(sf->read.fd);
-             return;
-          }
-        eina_strbuf_append_length(sf->read.buf, buf, toread);
-        _spy_file_line_extract(sf);
-        nbr += toread;
+        ERR("Error while reading file %s : %s",
+            sf->name, strerror(errno));
+        close(sf->read.fd);
+        free(sf->read.databuf);
+        sf->read.databuf = NULL;
+        return;
      }
-   fclose(sf->read.fd);
-   sf->read.fd = NULL;
+
+   eina_strbuf_append_length(sf->read.buf, sf->read.databuf, sf->read.nbr);
+   _spy_file_line_extract(sf);
+
+   free(sf->read.databuf);
+   sf->read.databuf = NULL;
+   close(sf->read.fd);
+   sf->poll.size += sf->read.nbr;
 }
 
 void
@@ -118,8 +120,7 @@ _spy_file_end_cb(void *data,
    sf = data;
    DBG("sf[%p]", sf);
 
-   ecore_timer_thaw(sf->poll.timer);
-   ecore_timer_reset(sf->poll.timer);
+   sf->poll.running = EINA_FALSE;
 
    ecore_job_add(_spy_file_job, sf);
 }
@@ -139,7 +140,8 @@ spy_file_poll(void *data)
    Ecore_Thread *et;
 
    sf = data;
-   DBG("spy_file[%p] file[%s]", sf, sf->name);
+   if (sf->poll.running)
+     return EINA_TRUE;
 
    /* We should have different actions made depending on error type. */
    if (stat(sf->name, &st))
@@ -168,7 +170,7 @@ spy_file_poll(void *data)
    sf->read.offset = sf->poll.size;
    sf->read.length = toread;
 
-
+   sf->poll.running = EINA_TRUE;
    et = ecore_thread_run(_spy_file_cb,
                          _spy_file_end_cb,
                          _spy_file_cancel_cb,
@@ -178,9 +180,6 @@ spy_file_poll(void *data)
         ERR("Failed to create reading thread");
         return EINA_TRUE;
      }
-
-   ecore_timer_freeze(sf->poll.timer);
-   sf->poll.size = size;
    return EINA_TRUE;
 }
 
@@ -195,6 +194,7 @@ void
 spy_file_data_set(Spy_File *sf,
                   const void *data)
 {
+   EINA_SAFETY_ON_NULL_RETURN(sf);
    sf->data = (const void *)data;
 }
 

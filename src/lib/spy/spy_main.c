@@ -90,7 +90,8 @@ spy_file_new(Spy *spy, const char *file)
      }
 
    sf->poll.size = st.st_size;
-   sf->poll.timer = ecore_timer_add(0.3, spy_file_poll, sf);
+   sf->poll.timer = ecore_timer_loop_add(0.3, spy_file_poll, sf);
+   ecore_timer_precision_set(1.0);
 
    spy->files = eina_inlist_append(spy->files, EINA_INLIST_GET(sf));
    DBG("spy_file[%p] size[%zd]", sf, st.st_size);
@@ -154,7 +155,6 @@ spy_shutdown(void)
    if (--_spy_init_count != 0)
      return _spy_init_count;
 
-   eio_shutdown();
    ecore_shutdown();
    eina_log_domain_unregister(_spy_log_dom_global);
    _spy_log_dom_global = -1;

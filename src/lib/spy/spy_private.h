@@ -24,15 +24,25 @@ struct _Spy_File
    {
       Ecore_Timer *timer;
       off_t size;
+      Eina_Bool running;
    } poll;
 
    struct
    {
-      FILE *fd;
+      int fd;
       off_t offset,
             length;
       Eina_Strbuf *buf;
+      char *databuf;
+      ssize_t nbr;
    } read;
+
+   struct
+   {
+      const char *p,
+                 *s;
+      size_t l;
+   } extract;
 };
 
 struct _Spy_Line
