@@ -37,6 +37,8 @@ conf_load_line_parse(Conf *conf,
    if (!buf)
      {
         ERR("Failed to allocate string buffer");
+        free(split[0]);
+        free(split);
         return;
      }
 
@@ -50,6 +52,8 @@ conf_load_line_parse(Conf *conf,
 
    eina_hash_add(conf->variables, variable, strdup(value));
 
+   free(split[0]);
+   free(split);
    free(variable);
    free(value);
    eina_strbuf_free(buf);

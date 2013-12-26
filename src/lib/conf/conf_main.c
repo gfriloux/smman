@@ -33,7 +33,7 @@ conf_free(Conf *conf)
         free((char *)conf->file);
         conf->file = NULL;
      }
-
+   eina_hash_free(conf->variables);
    free(conf);
 }
 
