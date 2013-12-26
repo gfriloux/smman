@@ -6,6 +6,7 @@ config_done(void *data,
 {
    Smman *smman;
    Eina_Iterator *it;
+   char *s;
 
    smman = data;
 
@@ -29,7 +30,13 @@ config_done(void *data,
    DBG("Host = %s", smman->cfg.host);
    eina_iterator_free(it);
 
-   smman->store = store_new(smman->cfg.server);
+   s = sdupf("%s%s%s",
+             smman->cfg.server,
+             (smman->cfg.server[strlen(smman->cfg.server)-1] == '/') ?
+                "" : "/",
+             "logs/");
+   smman->store = store_new(s);
+   free(s);
 }
 
 void

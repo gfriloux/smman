@@ -11,6 +11,27 @@ typedef struct _Log
 } Log;
 
 void
+_log_done(void *data,
+          Store *store EINA_UNUSED,
+          char *answer,
+          size_t len)
+{
+   Smman *smman = data;
+
+   DBG("smman[%p] Having a %zd bytes answer : \n%s\n", smman, len, answer);
+}
+
+void
+_log_error(void *data,
+           Store *store EINA_UNUSED,
+           char *strerr)
+{
+   Smman *smman = data;
+
+   ERR("smman[%p] Failed to store data :\n%s\n", smman, strerr);
+}
+
+void
 _log_send(Smman *smman,
           Log *log)
 {
@@ -18,7 +39,8 @@ _log_send(Smman *smman,
          *json_tags;
    char *source,
         *date,
-        *tag;
+        *tag,
+        *s;
    Eina_List *l;
 
    json = cJSON_CreateObject();
@@ -53,10 +75,13 @@ _log_send(Smman *smman,
    cJSON_AddStringToObject(json, "@source_host", log->source_host);
    cJSON_AddStringToObject(json, "@source_path", log->source_path);
 
+   s = cJSON_Print(json);
 
+   store_add(smman->store, s, strlen(s), _log_done, _log_error, smman);
+
+   free(s);
    free(date);
    free(source);
-   DBG("JSON = \n%s", cJSON_Print(json));
    cJSON_Delete(json);
 }
 
@@ -90,7 +115,6 @@ _log_line_match(const char *log, Rule *rule)
         r = regexec(&(rr->preg), log, nmatch, pmatch, 0);
         if (r == rr->must_match)
           {
-             NFO("Log \"%s\" is not affected by rule %s", log, rule->name);
              excluded = EINA_TRUE;
              break;
           }
@@ -127,12 +151,9 @@ log_line_event(void *data,
    it = eina_hash_iterator_tuple_new(filter->rules);
    while (eina_iterator_next(it, (void **)&t))
      {
-        const char *name;
         Eina_List *l;
 
-        name = t->key;
         rule = t->data;
-        DBG("rule[%p][%s]", rule, name);
 
         r = _log_line_match(spy_line_get(sl), rule);
         if (!r)
@@ -157,17 +178,6 @@ log_line_event(void *data,
 
    if (log->todel)
      return EINA_TRUE;
-
-
-   DBG("Log to index :\n"
-       "\tmessage = %s\n"
-       "\tfilename = %s\n"
-       "\tsource_host = %s\n"
-       "\tsource_path = %s",
-       log->message,
-       log->filename,
-       log->source_host,
-       log->source_path);
 
    _log_send(smman, log);
 

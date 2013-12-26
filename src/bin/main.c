@@ -112,6 +112,7 @@ int main(int argc, char **argv)
    conf_init();
    rules_init();
    spy_init();
+   store_init();
 
    smman = init();
    if (!smman)
@@ -123,6 +124,8 @@ int main(int argc, char **argv)
 
    ecore_main_loop_begin();
 
+   store_shutdown();
+   spy_shutdown();
    rules_shutdown();
    conf_shutdown();
    ecore_shutdown();

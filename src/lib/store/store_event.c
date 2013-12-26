@@ -38,7 +38,7 @@ store_event_complete(void *data,
      return EINA_TRUE;
 
    http_code = ecore_con_url_status_code_get(sa->ec);
-   if (http_code != 200)
+   if ((http_code != 200) && (http_code != 201))
      {
         errstr = store_utils_dupf("Server replied HTTP code %i", http_code);
         sa->cb.error((void *)sa->cb.data, sa->store, errstr);
