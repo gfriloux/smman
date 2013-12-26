@@ -140,7 +140,7 @@ spy_file_poll(void *data)
    Ecore_Thread *et;
 
    sf = data;
-   if (sf->poll.running)
+   if ((sf->poll.running) || (sf->poll.pause))
      return EINA_TRUE;
 
    /* We should have different actions made depending on error type. */

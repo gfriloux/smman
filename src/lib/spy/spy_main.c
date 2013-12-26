@@ -34,6 +34,22 @@ spy_free(Spy *spy)
    free(spy);
 }
 
+void
+spy_file_pause(Spy_File *sf)
+{
+   EINA_SAFETY_ON_NULL_RETURN(sf);
+
+   sf->poll.pause = EINA_TRUE;
+}
+
+void
+spy_file_resume(Spy_File *sf)
+{
+   EINA_SAFETY_ON_NULL_RETURN(sf);
+
+   sf->poll.pause = EINA_FALSE;
+}
+
 Spy_File *
 spy_file_get(Spy *spy, const char *file)
 {

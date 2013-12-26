@@ -24,7 +24,8 @@ struct _Spy_File
    {
       Ecore_Timer *timer;
       off_t size;
-      Eina_Bool running;
+      Eina_Bool running,
+                pause;
    } poll;
 
    struct
