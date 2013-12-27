@@ -1,3 +1,9 @@
+smman (2.0.0) stable; urgency=low
+
+   * Rewrite of smman for better perfs.
+
+ -- Guillaume Friloux <guillaume.friloux@aspfrance.com>  Fri, 27 Dec 2013 11:53:00 +0100
+
 smman (1.0.0) stable; urgency=low
 
    * First version of smman from 2010.
