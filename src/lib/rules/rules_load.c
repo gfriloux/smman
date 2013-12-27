@@ -83,6 +83,8 @@ rules_load_rule(void *data,
      }
    eina_iterator_free(it);
    rl->cb.progress((void *)rl->cb.data, rl->rules, rule);
+   rl->rules->rules = eina_inlist_append(rl->rules->rules,
+                                         EINA_INLIST_GET(rule));
 }
 
 void
@@ -127,10 +129,13 @@ rules_load_ls(void *data,
 }
 
 void
-rules_load_ls_done(void *data EINA_UNUSED,
+rules_load_ls_done(void *data,
                    Eio_File *handler EINA_UNUSED)
 {
+   Rules_Load *rl = data;
    DBG("End of rules listing.");
+   rl->cb.done((void *)rl->cb.data, rl->rules);
+   free(rl);
 }
 
 

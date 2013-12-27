@@ -44,6 +44,7 @@ int rules_init(void);
 int rules_shutdown(void);
 
 Rules * rules_new(const char *directory);
+void rules_purge(Rules *rules);
 Eina_Bool rules_load(Rules *rules, Rules_Progress_Cb progress_cb, Rules_Done_Cb done_cb, Rules_Error_Cb error_cb, void *data);
 
 void rules_rule_free(Rule *rule);

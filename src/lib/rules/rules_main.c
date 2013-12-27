@@ -7,20 +7,26 @@ int _rules_log_dom_global = -1;
 void
 rules_rule_free(Rule *rule)
 {
-   Rule_Regex *rr;
+   char *s;
    EINA_SAFETY_ON_NULL_RETURN(rule);
 
    free((char *)rule->name);
    free((char *)rule->spec.filename);
    free((char *)rule->spec.source_host);
    free((char *)rule->spec.source_path);
-   free((char *)rule->spec.tags);
 
-   EINA_INLIST_FOREACH(rule->spec.regex, rr)
+   EINA_LIST_FREE(rule->spec.tags, s)
+     free(s);
+
+   while (rule->spec.regex)
      {
+        Rule_Regex *rr = EINA_INLIST_CONTAINER_GET(rule->spec.regex, Rule_Regex);
+        rule->spec.regex = eina_inlist_remove(rule->spec.regex,rule->spec.regex);
+        regfree(&(rr->preg));
         free((char *)rr->regex);
         free(rr);
      }
+   free(rule);
 }
 
 Rules *
@@ -31,6 +37,17 @@ rules_new(const char *directory)
    rules = calloc(1, sizeof(Rules));
    rules->directory = strdup(directory);
    return rules;
+}
+
+void
+rules_purge(Rules *rules)
+{
+   while (rules->rules)
+     {
+        Rule *rule = EINA_INLIST_CONTAINER_GET(rules->rules, Rule);
+        rules->rules = eina_inlist_remove(rules->rules, rules->rules);
+        rules_rule_free(rule);
+     }
 }
 
 Eina_Bool

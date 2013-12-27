@@ -29,7 +29,8 @@ typedef struct _Smman
 
    struct
    {
-      Ecore_Event_Handler *sl; /* SPY_EVENT_LINE */
+      Ecore_Event_Handler *sl, /* SPY_EVENT_LINE */
+                          *su; /* ECORE_EVENT_SIGNAL_USER */
    } ev;
 } Smman;
 
@@ -53,6 +54,7 @@ void config_error(void *data, Conf *conf, const char *errstr);
 void filter_load(void *data, Rules *rules, Rule *rule);
 void filter_load_done(void *data, Rules *rules);
 void filter_load_error(void *data, Rules *rules, const char *errstr);
+Eina_Bool filter_reload(void *data, int type, void *ev);
 
 Eina_Bool log_line_event(void *data, int type, void *event);
 

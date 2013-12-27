@@ -26,12 +26,30 @@ spy_free(Spy *spy)
    EINA_SAFETY_ON_NULL_RETURN(spy);
 
    EINA_INLIST_FOREACH_SAFE(spy->files, l, sf)
-     {
-        free((char *)sf->name);
-        ecore_timer_del(sf->poll.timer);
-        eina_strbuf_free(sf->read.buf);
-     }
+     spy_file_free(sf);
    free(spy);
+}
+
+void
+spy_file_free(Spy_File *sf)
+{
+   Spy_File *tmp;
+
+   EINA_SAFETY_ON_NULL_RETURN(sf);
+
+   EINA_INLIST_FOREACH(sf->spy->files, tmp)
+     {
+        if (sf != tmp)
+          continue;
+
+        sf->spy->files = eina_inlist_remove(sf->spy->files, sf->spy->files);
+        break;
+     }
+
+   free((char *)sf->name);
+   ecore_timer_del(sf->poll.timer);
+   eina_strbuf_free(sf->read.buf);
+   free(sf);
 }
 
 void
@@ -107,7 +125,7 @@ spy_file_new(Spy *spy, const char *file)
 
    sf->poll.size = st.st_size;
    sf->poll.timer = ecore_timer_loop_add(0.3, spy_file_poll, sf);
-   ecore_timer_precision_set(1.0);
+   sf->spy = spy;
 
    spy->files = eina_inlist_append(spy->files, EINA_INLIST_GET(sf));
    DBG("spy_file[%p] size[%zd]", sf, st.st_size);

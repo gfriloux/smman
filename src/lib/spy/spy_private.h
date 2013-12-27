@@ -19,6 +19,7 @@ struct _Spy_File
    EINA_INLIST;
    const char *name;
    const void *data;
+   Spy *spy;
 
    struct
    {

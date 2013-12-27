@@ -16,6 +16,7 @@ int spy_shutdown(void);
 Spy * spy_new(void);
 void spy_free(Spy *spy);
 
+void spy_file_free(Spy_File *sf);
 Spy_File * spy_file_new(Spy *spy, const char *file);
 Spy_File * spy_file_get(Spy *spy, const char *file);
 const char * spy_file_name_get(Spy_File *sf);

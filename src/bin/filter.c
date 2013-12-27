@@ -2,9 +2,32 @@
 #include <glob.h>
 
 static void
-_filter_rules_free(void *data)
+_filter_rules_free(void *data EINA_UNUSED)
 {
-   rules_rule_free((Rule *)data);
+}
+
+Eina_Bool
+filter_reload(void *data,
+              int type EINA_UNUSED,
+              void *ev EINA_UNUSED)
+{
+   Smman *smman = data;
+   Filter *filter;
+
+   DBG("smman[%p]", smman);
+
+   EINA_INLIST_FOREACH(smman->filters, filter)
+     {
+        spy_file_pause(filter->sf);
+        eina_hash_free(filter->rules);
+        filter->rules = eina_hash_string_superfast_new(_filter_rules_free);
+     }
+
+   rules_purge(smman->rules);
+
+   rules_load(smman->rules, filter_load, filter_load_done,
+              filter_load_error, smman);
+   return EINA_TRUE;
 }
 
 Filter *
@@ -90,12 +113,31 @@ filter_load_done(void *data,
                  Rules *rules)
 {
    Smman *smman;
+   Filter *filter;
+   Eina_Inlist *l;
 
    smman = data;
    if (smman->rules != rules)
      return;
 
    DBG("smman[%p] rules[%p]", smman, rules);
+
+   EINA_INLIST_FOREACH_SAFE(smman->filters, l, filter)
+     {
+        if (eina_hash_population(filter->rules))
+          {
+             DBG("Resuming sf[%p]", filter->sf);
+             spy_file_resume(filter->sf);
+             continue;
+          }
+
+        DBG("Freeing filter %s", filter->filename);
+        smman->filters = eina_inlist_remove(smman->filters, smman->filters);
+        spy_file_free(filter->sf);
+        free((char *)filter->filename);
+        eina_hash_free(filter->rules);
+        free(filter);
+     }
 }
 
 void

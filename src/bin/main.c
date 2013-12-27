@@ -77,6 +77,7 @@ init(void)
      }
 
    smman->ev.sl = ecore_event_handler_add(SPY_EVENT_LINE,log_line_event, smman);
+   smman->ev.su = ecore_event_handler_add(ECORE_EVENT_SIGNAL_USER, filter_reload, smman);
    return smman;
 }
 
