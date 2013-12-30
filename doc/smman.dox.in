@@ -15,7 +15,7 @@
  * (using inotify), and extract every new entry.
  * to filter it using the rules and then indexing it in the configured 
  * <a href=http://www.elasticsearch.com>ElasticSearch</a> database.
- * <img src=intro.png>
+ * <img src=data/img/intro.png>
  *
  * <br />
  * @section CONFIGURATION Configuration
@@ -58,4 +58,49 @@ type = syslog
  * @li I seemed (back in 2010) to be too stupid to understand how to automatically tag 
  * messages properlly with grok.
  *
+ */
+
+
+/**
+ * @defgroup Lib-Conf Conf Library
+ *
+ * @section Lib-Conf-Introduction Introduction
+ * Conf is an asynchronous library to help loading/parsing basic configuration
+ * files.
+ * <br />
+ * Each configuration line will be stored in an hash table.
+ *
+ *
+ * @section Lib-Conf-Code Code documentation
+ * @li @ref Lib-Conf-Functions
+ * @defgroup Lib-Conf-Functions API functions
+ */
+
+/**
+ * @defgroup Lib-Spy Spy Library
+ *
+ * @section Lib-Spy-Introduction Introduction
+ * Spy is an asynchronous library to ease the detection of new lines
+ * inside files.
+ * <br />
+ * For every new line detected on a spied file, it will generate a
+ * @b SPY_EVENT_LINE event to ecore that your application will need to
+ * listen for.
+ *
+ * @section Lib-Spy-Code Code documentation
+ * @li @ref Lib-Spy-Functions
+ * @defgroup Lib-Spy-Functions API functions
+ */
+
+/**
+ * @defgroup Lib-Rules Rules Library
+ * 
+ * @section Lib-Rules-Introduction Introduction
+ * Rules is an asynchronous library for the loading of smman rules.<br />
+ * These rules are basic configuration files, that we read using the
+ * @ref Lib-Conf.<br />
+ *
+ * @section Lib-Rules-Code Code documentation
+ * @li @ref Lib-Rules-Functions
+ * @defgroup Lib-Rules-Functions API functions
  */

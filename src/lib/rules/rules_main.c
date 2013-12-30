@@ -1,9 +1,26 @@
 #include "rules_private.h"
 
+/**
+ * @addtogroup Lib-Rules-Functions
+ * @{
+ */
+
+/**
+ * @cond IGNORE
+ */
+
 static int _rules_init_count = 0;
 int _rules_log_dom_global = -1;
 
+/**
+ * @endcond
+ */
 
+/**
+ * @brief Frees a Rule structure.
+ *
+ * @param rule Rule structure to free.
+ */
 void
 rules_rule_free(Rule *rule)
 {
@@ -29,6 +46,13 @@ rules_rule_free(Rule *rule)
    free(rule);
 }
 
+/**
+ * @brief Creates a new Rules structure.
+ *
+ * @param directory Directory to read to load all the rules.
+ *
+ * @return Pointer to new Rules structure.
+ */
 Rules *
 rules_new(const char *directory)
 {
@@ -39,6 +63,11 @@ rules_new(const char *directory)
    return rules;
 }
 
+/**
+ * @brief Unload all the loaded rules.
+ *
+ * @param rules Rules structure to unload.
+ */
 void
 rules_purge(Rules *rules)
 {
@@ -50,6 +79,17 @@ rules_purge(Rules *rules)
      }
 }
 
+/**
+ * @brief Initiate the loading of all the rules that can be found.
+ *
+ * @param rules Rules structure to use for loading.
+ * @param progress_cb Callback called in the main loop for each rule loaded.
+ * @param done_cb Callback called in the main loop when loading is over.
+ * @param error_cb Callback called in the main loop when an error occurs.
+ * @param data Unmodified user data passed to callbacks.
+ *
+ * @return EINA_TRUE.
+ */
 Eina_Bool
 rules_load(Rules *rules,
            Rules_Progress_Cb progress_cb,
@@ -76,6 +116,11 @@ rules_load(Rules *rules,
    return EINA_TRUE;
 }
 
+/**
+ * @brief Initialize Rules and all it's required submodules.
+ *
+ * @return 1 or greater on success, 0 otherwise.
+ */
 int
 rules_init(void)
 {
@@ -127,6 +172,13 @@ shutdown_eina:
    return --_rules_init_count;
 }
 
+/**
+ * @brief Shutdown conf and all it's submodules if possible.
+ *
+ * @return 0 if rules shuts down, greater than 0 otherwise.
+ *         This function shuts down all things set up in rules_init()
+ *         and cleans up its memory.
+ */
 int
 rules_shutdown(void)
 {
@@ -147,3 +199,7 @@ rules_shutdown(void)
    eina_shutdown();
    return _rules_init_count;
 }
+
+/**
+ * @}
+ */

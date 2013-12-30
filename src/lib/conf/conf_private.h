@@ -1,5 +1,8 @@
 #include <Conf.h>
 
+/**
+ * @cond IGNORE
+ */
 extern int _conf_log_dom_global;
 
 #define ERR(...) EINA_LOG_DOM_ERR(_conf_log_dom_global, __VA_ARGS__)
@@ -36,3 +39,7 @@ void conf_load_map_main(void *data, Eio_File *handler, void *map, size_t length)
 void conf_load_map_error(void *data, Eio_File *handler, int error);
 
 void conf_load_line_free(void *data);
+
+/**
+ * @endcond
+ */

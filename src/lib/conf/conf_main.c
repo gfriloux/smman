@@ -1,8 +1,27 @@
 #include "conf_private.h"
 
+/**
+ * @addtogroup Lib-Conf-Functions
+ * @{
+ */
+
+
+/**
+ * @cond IGNORE
+ */
 static int _conf_init_count = 0;
 int _conf_log_dom_global = -1;
+/**
+ * @endcond
+ */
 
+/**
+ * @brief Returns a pointer to the filename of the conf.
+ *
+ * @param conf Conf structure.
+ * @return Pointer to the filename. Do not free it as it is a pointer to the
+ *         internal's buffer.
+ */
 const char *
 conf_file_get(Conf *conf)
 {
@@ -10,6 +29,12 @@ conf_file_get(Conf *conf)
    return conf->file;
 }
 
+/**
+ * @brief Returns an hash table having the keys/values of the conf.
+ *
+ * @param conf Conf structure.
+ * @return Pointer to the internal Hash table. Do not free it!
+ */
 Eina_Hash *
 conf_variables_get(Conf *conf)
 {
@@ -17,6 +42,11 @@ conf_variables_get(Conf *conf)
    return conf->variables;
 }
 
+/**
+ * @brief Frees an allocated Conf structure.
+ *
+ * @param conf Conf structure.
+ */
 void
 conf_free(Conf *conf)
 {
@@ -37,6 +67,17 @@ conf_free(Conf *conf)
    free(conf);
 }
 
+/**
+ * @brief Loads the configuration file.
+ *
+ * @param file Configuration file to load.
+ * @param done_cb Callback called in the main loop when the file has been
+ *                successfully loaded.
+ * @param error_cb Callback called in the main loop when the file couldn't
+ *                 be loaded.
+ * @param data Unmodified user data passed to callbacks.
+ * @return EINA_TRUE if successfull, EINA_FALSE otherwise.
+ */
 Eina_Bool
 conf_load(char *file,
           Conf_Done_Cb done_cb,
@@ -100,6 +141,10 @@ free_conf:
    return EINA_FALSE;
 }
 
+/**
+ * @brief Initialize conf and all it's required submodule.
+ * @return 1 or greater on success, 0 otherwise.
+ */
 int conf_init(void)
 {
    if (++_conf_init_count != 1)
@@ -143,6 +188,13 @@ shutdown_eina:
    return --_conf_init_count;
 }
 
+/**
+ * @brief Shutdown conf and all it's submodule if possible.
+ *
+ * @return 0 if conf shuts down, greater than 0 otherwise.
+ *         This function shuts down all things set up in conf_init()
+ *         and cleans up its memory.
+ */
 int
 conf_shutdown(void)
 {
@@ -162,3 +214,7 @@ conf_shutdown(void)
    eina_shutdown();
    return _conf_init_count;
 }
+
+/**
+ * @}
+ */

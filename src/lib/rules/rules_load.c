@@ -1,5 +1,25 @@
 #include "rules_private.h"
 
+/**
+ * @addtogroup Lib-Rules-Functions
+ * @{
+ */
+
+/**
+ * @cond IGNORE
+ */
+
+/**
+ * @brief Create a Rule structure from tuple given by @ref Lib-Conf
+ *
+ * @param data Rules_Load structure.
+ * @param conf Conf structure.
+ *
+ * This function is called by conf_load() when the loading of the rule
+ * is over.<br />
+ * Once the rule is allocated, it is added to the rules's list and
+ * given to the progress callback.
+ */
 void
 rules_load_rule(void *data,
                 Conf *conf)
@@ -87,6 +107,16 @@ rules_load_rule(void *data,
                                          EINA_INLIST_GET(rule));
 }
 
+/**
+ * @brief Reports an error to the error Callback defined by app.
+ *
+ * @param data Rules_Load structure.
+ * @param conf Conf structure.
+ * @param errstr Error string given by @ref Lib-Conf
+ *
+ * This function is called by conf_load() if it failed to read and parse
+ * a configuration file.
+ */
 void
 rules_load_rule_error(void *data,
                       Conf *conf,
@@ -101,6 +131,15 @@ rules_load_rule_error(void *data,
    free(rl);
 }
 
+/**
+ * @brief Filter called from eio's thread, we filter directories.
+ *
+ * @param data UNUSED
+ * @param handler UNUSED
+ * @param info Eina_File_Direct_Info structure of file.
+ *
+ * @return EINA_FALSE if passed file is a directory, EINA_TRUE otherwise.
+ */
 Eina_Bool
 rules_load_ls_filter(void *data EINA_UNUSED,
                      Eio_File *handler EINA_UNUSED,
@@ -111,6 +150,15 @@ rules_load_ls_filter(void *data EINA_UNUSED,
    return EINA_TRUE;
 }
 
+/**
+ * @brief Load one found rule.
+ *
+ * @param data Rules_Load structure.
+ * @param handler UNUSED.
+ * @param info Eina_File_Direct_Info structure of file.
+ *
+ * This function is called by eio_file_direct_ls() for every file listed.
+ */
 void
 rules_load_ls(void *data,
               Eio_File *handler EINA_UNUSED,
@@ -128,6 +176,15 @@ rules_load_ls(void *data,
              rl);
 }
 
+/**
+ * @brief Reports the end of rules loading.
+ *
+ * @param data Rules_Load structure.
+ * @param handler UNUSED.
+ *
+ * This function gets called by eio_file_direct_ls() (from rules_load()) when
+ * listing of files is over.
+ */
 void
 rules_load_ls_done(void *data,
                    Eio_File *handler EINA_UNUSED)
@@ -138,7 +195,16 @@ rules_load_ls_done(void *data,
    free(rl);
 }
 
-
+/**
+ * @brief Reports an error to the error Callback defined by app.
+ *
+ * @param data Rules_Load structure.
+ * @param handler UNUSED.
+ * @param error errno from eio.
+ *
+ * This function gets called by eio_file_direct_ls() when an error occurs
+ * while listing files.
+ */
 void
 rules_load_ls_error(void *data,
                     Eio_File *handler EINA_UNUSED,
@@ -153,3 +219,11 @@ rules_load_ls_error(void *data,
    rl->cb.error((void *)rl->cb.data, rl->rules, "Failed to list rules directory");
    free(rl);
 }
+
+/**
+ * @endcond
+ */
+
+/**
+ * @}
+ */

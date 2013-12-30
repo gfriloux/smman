@@ -1,11 +1,35 @@
 #include "conf_private.h"
 
+/**
+ * @addtogroup Lib-Conf-Functions
+ * @{
+ */
+
+/**
+ * @cond IGNORE
+ */
+
+/**
+ * @brief Frees an allocated configuration value.
+ * @param data Pointer to allocated conf value.
+ *
+ * This function is called by eina_hash_free() when we ask to free
+ * the conf->variables hash table.
+ */
 void
 conf_load_line_free(void *data)
 {
    free(data);
 }
 
+/**
+ * @brief Parse a line into a tuple of variable + value.
+ * @param conf Conf structure.
+ * @param line Line to parse.
+ *
+ * This function is called by conf_load_map_filter for any
+ * line found in the configuration file.
+ */
 void
 conf_load_line_parse(Conf *conf,
                      char *line)
@@ -59,6 +83,19 @@ conf_load_line_parse(Conf *conf,
    eina_strbuf_free(buf);
 }
 
+/**
+ * @brief Read configuration file line by line.
+ * @param data Conf_Load structure.
+ * @param handler UNUSED.
+ * @param map Data from configuration file.
+ * @param length Length of data.
+ *
+ * @return EINA_TRUE.
+ *
+ * This function is called by eio_file_map_all(),
+ * <b>from its own thread</b>, when it successfully loaded
+ * the configuration file.
+ */
 Eina_Bool
 conf_load_map_filter(void *data,
                      Eio_File *handler EINA_UNUSED,
@@ -104,6 +141,18 @@ conf_load_map_filter(void *data,
    return EINA_TRUE;
 }
 
+/**
+ * @brief Call callback from app to tell we ended to load configuration file.
+ *
+ * @param data Conf_Load structure.
+ * @param handler UNUSED.
+ * @param map UNUSED.
+ * @param length UNUSED.
+ *
+ * This function is called by eio_file_map_all() from the main loop.<br />
+ * It is usefull for us to warn our caller that we ended parsing of file,
+ * from main loop.
+ */
 void
 conf_load_map_main(void *data,
                    Eio_File *handler EINA_UNUSED,
@@ -120,6 +169,16 @@ conf_load_map_main(void *data,
    free(cl);
 }
 
+/**
+ * @brief Call callback from app to tell we got an error.
+ *
+ * @param data Conf_Load structure.
+ * @param handler UNUSED.
+ * @param error See errno(3)
+ *
+ * This function gets called by eio_file_map_all() if eio failed to mmap
+ * file. This call is made from the main loop.
+ */
 void
 conf_load_map_error(void *data,
                     Eio_File *handler EINA_UNUSED,
@@ -135,3 +194,11 @@ conf_load_map_error(void *data,
    conf_free(cl->conf);
    free(cl);
 }
+
+/**
+ * @endcond
+ */
+
+/**
+ * @}
+ */

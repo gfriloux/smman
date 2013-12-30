@@ -3,11 +3,26 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+/**
+ * @addtogroup Lib-Spy-Functions
+ * @{
+ */
+
+/**
+ * @cond IGNORE
+ */
 static int _spy_init_count = 0;
 int _spy_log_dom_global = -1;
 
 int SPY_EVENT_LINE = 0;
+/**
+ * @endcond
+ */
 
+/**
+ * @brief Create a new Spy structure.
+ * @return Pointer to newly created Spy or NULL if allocation failed.
+ */
 Spy *
 spy_new(void)
 {
@@ -18,6 +33,13 @@ spy_new(void)
    return spy;
 }
 
+/**
+ * @brief Frees a Spy structure.
+ *
+ * @param Spy structure to free.
+ *
+ * This function will also free all the associated Spy_File structures.
+ */
 void
 spy_free(Spy *spy)
 {
@@ -30,6 +52,13 @@ spy_free(Spy *spy)
    free(spy);
 }
 
+/**
+ * @brief Frees a Spy_File structure.
+ *
+ * @param sf Spy_File structure to free.
+ *
+ * This function will also remove the Spy_File from the Spy list.
+ */
 void
 spy_file_free(Spy_File *sf)
 {
@@ -52,6 +81,13 @@ spy_file_free(Spy_File *sf)
    free(sf);
 }
 
+/**
+ * @brief Pause spying of a file.
+ *
+ * @param sf Spy_File to pause.
+ *
+ * It doesnt stop its timer, but will block size checking.
+ */
 void
 spy_file_pause(Spy_File *sf)
 {
@@ -60,6 +96,13 @@ spy_file_pause(Spy_File *sf)
    sf->poll.pause = EINA_TRUE;
 }
 
+/**
+ * @brief Resume spying of a file.
+ *
+ * @param sf Spy_File to resume.
+ *
+ * This function allows to resume the spying of a file that got paused.
+ */
 void
 spy_file_resume(Spy_File *sf)
 {
@@ -68,6 +111,15 @@ spy_file_resume(Spy_File *sf)
    sf->poll.pause = EINA_FALSE;
 }
 
+/**
+ * @brief Get the Spy_File associated to a file.
+ *
+ * @param spy Spy structure to inpect.
+ * @param file File to search for.
+ * @return Spy_File structure spying the file, or NULL.
+ *
+ * This can be used to know if we are already spying a file or not
+ */
 Spy_File *
 spy_file_get(Spy *spy, const char *file)
 {
@@ -82,6 +134,15 @@ spy_file_get(Spy *spy, const char *file)
    return NULL;
 }
 
+/**
+ * @brief Start to spy a file.
+ * @param spy Spy structure to attach file to.
+ * @param file File to start spying.
+ * @return Pointer to newly allocated Spy_File structure.
+ *
+ * This function will add a timer that will periodically look for changes
+ * on the file, and report every new line inserted into it.
+ */
 Spy_File *
 spy_file_new(Spy *spy, const char *file)
 {
@@ -138,7 +199,10 @@ free_sf:
    return NULL;
 }
 
-
+/**
+ * @brief Initialize spy and all it's required submodules.
+ * @return 1 or greater on success, 0 otherwise.
+ */
 int
 spy_init(void)
 {
@@ -176,7 +240,13 @@ shutdown_eina:
    return --_spy_init_count;
 }
 
-
+/**
+ * @brief Shutdown spy and all it's submodules if possible.
+ *
+ * @return 0 if spy shuts down, greater than 0 otherwise.
+ *         This function shuts down all things set up in spy_init()
+ *         and cleans up its memory.
+ */
 int
 spy_shutdown(void)
 {
@@ -195,3 +265,7 @@ spy_shutdown(void)
    eina_shutdown();
    return _spy_init_count;
 }
+
+/**
+ * @}
+ */

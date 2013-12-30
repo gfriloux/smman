@@ -523,3 +523,19 @@ p
    margin: 5px;
    padding-left: 5px;
 }
+
+dl.params dt
+{
+   font-weight: bold;
+}
+
+table.params td
+{
+   font-size: 80%;
+   padding-left: 5px;
+}
+
+dl.return dt
+{
+   font-weight: bold;
+}

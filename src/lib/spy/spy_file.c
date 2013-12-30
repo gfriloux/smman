@@ -5,6 +5,21 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+/**
+ * @addtogroup Lib-Spy-Functions
+ * @{
+ */
+
+/**
+ * @cond IGNORE
+ */
+
+/**
+ * @brief Frees data associated to SPY_EVENT_LINE event.
+ *
+ * @param d1 Spy_Line structure to free.
+ * @param d2 UNUSED
+ */
 void
 _spy_file_line_free(void *d1,
                     void *d2 EINA_UNUSED)
@@ -15,6 +30,14 @@ _spy_file_line_free(void *d1,
    free(sl);
 }
 
+/**
+ * @brief Creates a SPY_EVENT_LINE event to ecore.
+ *
+ * @param data Spy_Line structure to associate to event.
+ *
+ * This function is called by _spy_file_line_extract(), but from
+ * the main loop.
+ */
 static void
 _spy_file_event(void *data)
 {
@@ -24,12 +47,32 @@ _spy_file_event(void *data)
    ecore_event_add(SPY_EVENT_LINE, sl, _spy_file_line_free, sl);
 }
 
+/**
+ * @brief Immediately launch a poll on given Spy_File structure.
+ *
+ * @param data Spy_File structure.
+ *
+ * This function is called by an ecore_job to start a poll.
+ * It is recommended to do it using an ecore_job instead of a direct
+ * call to avoid constant blocking on the main loop in case of a file
+ * that is getting logs too frequently.
+ */
 static void
 _spy_file_job(void *data)
 {
    spy_file_poll(data);
 }
 
+/**
+ * @brief Extract one line from buffered data.
+ *
+ * @param sf Spy_File structure to use for buffered data.
+ *
+ * This function is called by spy_file_cb(), and thus, running from
+ * a thread.<br />
+ * For each line found, this function will initiate a SPY_EVENT_LINE
+ * event from the main loop.
+ */
 void
 _spy_file_line_extract(Spy_File *sf)
 {
@@ -69,6 +112,15 @@ _spy_file_line_extract(Spy_File *sf)
      }
 }
 
+/**
+ * @brief Read new lines from a file.
+ *
+ * @param data Spy_File structure of the file to read.
+ * @param thread UNUSED.
+ *
+ * This function is running in a separate thread to not block the main
+ * loop while reading and parsing file.
+ */
 void
 _spy_file_cb(void *data,
              Ecore_Thread *thread EINA_UNUSED)
@@ -111,6 +163,15 @@ _spy_file_cb(void *data,
    sf->poll.size += sf->read.nbr;
 }
 
+/**
+ * @brief Initiate another poll on the given file.
+ *
+ * @param data Spy_File structure to poll.
+ * @param thread UNUSED.
+ *
+ * This function is called by ecore when thread running _spy_file_cb()
+ * has ended.
+ */
 void
 _spy_file_end_cb(void *data,
                  Ecore_Thread *thread EINA_UNUSED)
@@ -125,11 +186,33 @@ _spy_file_end_cb(void *data,
    ecore_job_add(_spy_file_job, sf);
 }
 
+/**
+ * @brief Unused function, would be called if we cancel our thread,
+ *        but we never do it.
+ *
+ * @param data UNUSED.
+ * @param thread UNUSED.
+ */
 void
 _spy_file_cancel_cb(void *data EINA_UNUSED,
                     Ecore_Thread *thread EINA_UNUSED)
 {}
 
+/**
+ * @endcond
+ */
+
+/**
+ * @brief Verify is a file changed.
+ *
+ * @param data Spy_File structure of the file to check.
+ *
+ * @return EINA_TRUE.
+ *
+ * This function is called by the timer of the Spy_File, and will check
+ * the filesize of the file to detect changes. It will detect the # of bytes
+ * to read and start a thread to take care of it (reading/parsing).
+ */
 Eina_Bool
 spy_file_poll(void *data)
 {
@@ -183,6 +266,13 @@ spy_file_poll(void *data)
    return EINA_TRUE;
 }
 
+/**
+ * @brief Returns the fullpath of the file being spied.
+ *
+ * @param sf Spy_File structure.
+ *
+ * @return Pointer to internal buffer. DO NOT FREE IT.
+ */
 const char *
 spy_file_name_get(Spy_File *sf)
 {
@@ -190,6 +280,12 @@ spy_file_name_get(Spy_File *sf)
    return sf->name;
 }
 
+/**
+ * @brief Attach data to the Spy_File structure.
+ *
+ * @param sf Spy_File structure to attach data to.
+ * @param data Pointer to the data to attach.
+ */
 void
 spy_file_data_set(Spy_File *sf,
                   const void *data)
@@ -198,9 +294,20 @@ spy_file_data_set(Spy_File *sf,
    sf->data = (const void *)data;
 }
 
+/**
+ * @brief Get the data attached to a Spy_File structure.
+ *
+ * @param sf Spy_File structure whose data is needed.
+ *
+ * @return Pointer to the data attached.
+ */
 void *
 spy_file_data_get(Spy_File *sf)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(sf, NULL);
    return (void *)sf->data;
 }
+
+/**
+ * @}
+ */

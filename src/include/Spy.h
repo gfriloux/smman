@@ -4,7 +4,12 @@
 #include <Ecore.h>
 #include <Eio.h>
 
-extern int SPY_EVENT_LINE;
+/**
+ * @addtogroup Lib-Spy-Functions
+ * @{
+ */
+
+extern int SPY_EVENT_LINE; /*!< Event created when a new line is found */
 
 typedef struct _Spy Spy;
 typedef struct _Spy_File Spy_File;
@@ -27,4 +32,8 @@ void spy_file_resume(Spy_File *sf);
 
 const char * spy_line_get(Spy_Line *sl);
 Spy_File * spy_line_spyfile_get(Spy_Line *sl);
+
+/**
+ * @}
+ */
 #endif

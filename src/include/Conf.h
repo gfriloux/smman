@@ -4,6 +4,11 @@
 #include <Ecore.h>
 #include <Eio.h>
 
+/**
+ * @addtogroup Lib-Conf-Functions
+ * @{
+ */
+
 typedef struct _Conf Conf;
 
 typedef void (*Conf_Done_Cb)(void *data, Conf *conf);
@@ -14,4 +19,8 @@ Eina_Hash * conf_variables_get(Conf *conf);
 Eina_Bool conf_load(char *file, Conf_Done_Cb done_cb, Conf_Error_Cb error_cb, const void *data);
 int conf_init(void);
 int conf_shutdown(void);
+
+/**
+ * @}
+ */
 #endif
