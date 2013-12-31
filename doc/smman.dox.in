@@ -73,7 +73,52 @@ type = syslog
  *
  * @section Lib-Conf-Code Code documentation
  * @li @ref Lib-Conf-Functions
+ * @li @ref Lib-Conf-Example
  * @defgroup Lib-Conf-Functions API functions
+ *
+ * @defgroup Lib-Conf-Example Basic Example
+ * @code
+ * #include <Conf.h>
+ *
+ * void
+ * _conf_done(void *data EINA_UNUSED,
+ *            Conf *conf)
+ * {
+ *    Eina_Iterator *it;
+ *    printf("done!");
+ *
+ *    printf("Results :\n");
+ *    it = eina_hash_iterator_tuple_new(conf_variables_get(conf));
+ *    while (eina_iterator_next(it, &data))
+ *      {
+ *         Eina_Hash_Tuple *t = data;
+ *         const char *variable = t->key;
+ *         const char *value = t->data;
+ *         printf("%s: %s\n", variable, value);
+ *      }
+ *    eina_iterator_free(it);
+ * }
+ *
+ * void
+ * _conf_error(void *data EINA_UNUSED,
+ *             Conf *conf EINA_UNUSED,
+ *             const char *errstr)
+ * {
+ *    printf("error : %s\n", errstr);
+ * }
+ *
+ * int main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
+ * {
+ *    conf_init();
+ *
+ *    conf_load("./toto.conf", _conf_done, _conf_error, NULL);
+ *
+ *    ecore_main_loop_begin();
+ *
+ *    conf_shutdown();
+ *    return 0;
+ * }
+ * @endcode
  */
 
 /**

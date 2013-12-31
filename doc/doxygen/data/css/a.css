@@ -1,0 +1,119 @@
+#a_header
+{
+   width: 100%;
+   height: 102px;
+   background-image: url(data/img/head_bg.png);
+   background-repeat: repeat-x;
+}
+
+.a_layout
+{
+   margin-left: auto;
+   margin-right: auto;
+}
+
+.a_clear {
+   clear: both;
+   width: 0px;
+   height: 0px;
+}
+
+#a_header .a_menu-container {
+}
+
+#a_header .a_menu-container ul {
+   list-style-type: none;
+   list-style-position: inside;
+   margin: 0;
+}
+
+#a_header .a_menu-container li {
+   display: block;
+   float: left;
+}
+
+#a_header .a_menu {
+   height: 63px;
+   display: block;
+   background-image: url(data/img/menu_bg.png);
+   background-repeat: repeat-x;
+}
+
+#a_header .a_menu ul {
+   height: 100%;
+   display: block;
+   background-image: url(data/img/menu_bg_last.png);
+   background-repeat: no-repeat;
+   background-position: top right;
+   padding-right: 149px;
+}
+
+#a_header .a_menu li {
+   height: 100%;
+   text-align: center;
+   background-image: url(data/img/menu_bg_unsel.png);
+   background-repeat: no-repeat;
+}
+
+#a_header .a_menu a {
+   height: 100%;
+   display: block;
+   color: #ddd;
+   text-decoration: none;
+   font-size: 10pt;
+   line-height: 59px;
+   text-align: center;
+   padding: 0px 15px 0px 15px;
+}
+
+#a_header .a_menu li:hover {
+   background-image: url(data/img/menu_bg_hover.png);
+   background-repeat: no-repeat;
+}
+
+#a_header .a_menu li:hover a {
+   color: #FFFFFF;
+}
+
+#a_header .a_menu li.a_current {
+   background-image: url(data/img/menu_bg_current.png);
+   background-repeat: no-repeat;
+}
+
+#a_header .a_menu li.a_current a {
+   color: #646464;
+}
+
+#a_header .a_submenu ul {
+   display: none;
+}
+
+#a_header .a_submenu .a_current {
+   display: block;
+}
+
+#a_header .a_submenu {
+   font: bold 10px verdana,'Bitstream Vera Sans',helvetica,arial,sans-serif;
+   margin-top: 10px;
+}
+
+#a_header .a_submenu a {
+   color: #888888;
+   text-decoration: none;
+   font-size: 0.9em;
+   line-height: 15px;
+   padding:0px 5px 0px 5px;
+}
+
+#a_header .a_submenu a:hover {
+   color: #444444;
+}
+
+#a_header .a_submenu li {
+   border-left: 1px solid #DDDDDD;
+}
+
+#a_header .a_submenu li:last-child {
+   border-left: 0;
+}
+
