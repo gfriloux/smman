@@ -75,7 +75,7 @@ rules_load_rule(void *data,
           rule->spec.source_host = strdup(value);
         else if (!strcmp(variable, "source_path"))
           rule->spec.source_path = strdup(value);
-        else if (!strcmp(variable, "todel"))
+        else if (!strcmp(variable, "delete"))
           rule->spec.todel = !!atoi(value);
 
         else if (!strncmp(variable, "message", 7))
