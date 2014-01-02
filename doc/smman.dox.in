@@ -32,7 +32,7 @@
  *
  * Exemple of configuration file : <br />
  * @code
- * server = http://localhost:9200/logstash/logs/
+ * server = http://localhost:9200/logstash/
  * host = BlackStar
  * type = syslog
  * @endcode
@@ -41,7 +41,9 @@
  * @section RULES Writing rules
  * Writing rules is quite easy. SMMan search for rules in
  * <b>/etc/smman/rules.d/</b><br />
- * Check the rules directory in the source code to see examples of rules.<br />
+ * Check the
+ * <a href="https://git.enlightenment.org/devs/kuri/smman.git/tree/rules">rules 
+ * directory</a> in the source code to see examples of rules.<br />
  * Basically, rules allows you to write matches about filenames or messages
  * (using globbing/regexp), and set informations like :
  * @li source_host : Set a custom hostname
