@@ -329,7 +329,6 @@
  *         size_t len EINA_UNUSED)
  * {
  *    printf("Done_Cb : %s\n", answer);
- *
  * }
  *
  * void
