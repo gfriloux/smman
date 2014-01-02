@@ -32,10 +32,10 @@
  *
  * Exemple of configuration file : <br />
  * @code
-server = http://localhost:9200/logstash/logs/
-host = BlackStar
-type = syslog
-@endcode
+ * server = http://localhost:9200/logstash/logs/
+ * host = BlackStar
+ * type = syslog
+ * @endcode
  *
  * <br />
  * @section RULES Writing rules
@@ -70,6 +70,21 @@ type = syslog
  * <br />
  * Each configuration line will be stored in an hash table.
  *
+ * @section Lib-Conf-Algorithm Algorithm
+ * Here is a simplified sequence chart to understand how it works.
+ * @msc
+ * MainLoop,Thread1;
+ * MainLoop=>MainLoop [ label = "conf_load()" ];
+ * MainLoop=>MainLoop [ label = "eio_file_map_all()" ];
+ * ---                [ label = "Begin loop" ];
+ * MainLoop=>Thread1  [ label = "conf_load_map_filter()" ];
+ * Thread1=>Thread1   [ label = "conf_load_line_parse()" ];
+ * ---                [ label = "End loop" ];
+ * Thread1=>MainLoop  [ label = "conf_callback()" ];
+ * MainLoop=>MainLoop [ label = "app_callback()" ];
+ * @endmsc
+ * As you can see, loading of the file, and parsing of it is done
+ * in a separate thread to not block the main loop.
  *
  * @section Lib-Conf-Code Code documentation
  * @li @ref Lib-Conf-Functions
@@ -77,6 +92,9 @@ type = syslog
  * @defgroup Lib-Conf-Functions API functions
  *
  * @defgroup Lib-Conf-Example Basic Example
+ * @section Lib-Conf-Example-Sample-App Sample program
+ * Here is an example program using libconf to load and parse a given
+ * configuration file :
  * @code
  * #include <Conf.h>
  *
@@ -85,8 +103,8 @@ type = syslog
  *            Conf *conf)
  * {
  *    Eina_Iterator *it;
- *    printf("done!");
- *
+ *    printf("done!\n");
+ * 
  *    printf("Results :\n");
  *    it = eina_hash_iterator_tuple_new(conf_variables_get(conf));
  *    while (eina_iterator_next(it, &data))
@@ -94,11 +112,12 @@ type = syslog
  *         Eina_Hash_Tuple *t = data;
  *         const char *variable = t->key;
  *         const char *value = t->data;
- *         printf("%s: %s\n", variable, value);
+ *         printf("\t%s: %s\n", variable, value);
  *      }
  *    eina_iterator_free(it);
+ *    ecore_main_loop_quit();
  * }
- *
+ * 
  * void
  * _conf_error(void *data EINA_UNUSED,
  *             Conf *conf EINA_UNUSED,
@@ -106,18 +125,41 @@ type = syslog
  * {
  *    printf("error : %s\n", errstr);
  * }
- *
- * int main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
+ * 
+ * int main(int argc, char **argv)
  * {
  *    conf_init();
- *
- *    conf_load("./toto.conf", _conf_done, _conf_error, NULL);
- *
+ * 
+ *    if (argc != 2)
+ *      {
+ *         fprintf(stderr, "You need to provide the conf file to load\n");
+ *         return 1;
+ *      }
+ * 
+ *    conf_load(argv[1], _conf_done, _conf_error, NULL);
+ * 
  *    ecore_main_loop_begin();
- *
+ * 
  *    conf_shutdown();
  *    return 0;
  * }
+ * @endcode
+ * <br /><br />
+ * @section Lib-Conf-Example-Sample-Conf Sample configuration file
+ * You can try the configuration file below :
+ * @code
+ * # This rule will match any log message from /var/log/auth.log that
+ * # is about a connection using a valid public key for user root, and that
+ * # is not from normally authorized IPs.
+ * # These logs will be tagged with 'alert' word
+ * filename = /var/log/auth.log
+ * message    = .*Accepted publickey for root.*
+ * message_unmatch =      .*192\.168\.2\.84.*
+ * message_unmatch = .*192\.168\.2\.82.*
+ * message_unmatch = .*192\.168\.2\.94.*
+ *
+ *
+ * tags = alert
  * @endcode
  */
 
@@ -132,9 +174,82 @@ type = syslog
  * @b SPY_EVENT_LINE event to ecore that your application will need to
  * listen for.
  *
+ * @section Lib-Spy-Algorithm Algorithm
+ * Here is a simplified sequence chart to understand how it works.
+ * @msc
+ * MainLoop,Thread1;
+ * MainLoop=>MainLoop [ label = "spy_file_new()" ];
+ * ---                [ label = "Loop until file changes" ];
+ * MainLoop=>MainLoop [ label = "spy_file_poll()" ];
+ * ---                [ label = "File changed" ];
+ * MainLoop=>Thread1  [ label = "_spy_file_cb()" ];
+ * Thread1=>Thread1   [ label = "_spy_file_line_extract()" ];
+ * Thread1=>MainLoop  [ label = "_spy_file_event()" ];
+ * MainLoop=>MainLoop [ label = "ecore_event_add()" ];
+ * ---                [ label = "Return to loop on spy_file_poll()" ];
+ * @endmsc
+ * For each call to spy_file_new(), an ecore timer is created to
+ * periodically call spy_file_poll(). <br />
+ * Once a changed is observed on the file, a thread is created to get
+ * lines added to the file, and create the ecore events.
+ *
  * @section Lib-Spy-Code Code documentation
  * @li @ref Lib-Spy-Functions
+ * @li @ref Lib-Spy-Example
  * @defgroup Lib-Spy-Functions API functions
+ *
+ * @defgroup Lib-Spy-Example Basic Example
+ * @section Lib-Spy-Example-Sample-App Sample program
+ * Here is a sample program that uses lib spy to get new line events
+ * about the spied file :
+ * @code
+ * #include <Spy.h>
+ * #include <stdio.h>
+ *
+ * Eina_Bool
+ * _line_event(void *data,
+ *            int type EINA_UNUSED,
+ *            void *event)
+ * {
+ *    Spy *spy = data;
+ *    Spy_Line *sl = event;
+ *
+ *    printf("spy[%p] sl[%p]\n", spy, sl);
+ *    printf("line = %s\n", (char *)spy_line_get(sl));
+ *    return EINA_TRUE;
+ * }
+ *
+ * int main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
+ * {
+ *    Spy *spy;
+ *    Ecore_Event_Handler *eeh;
+ *
+ *    if (argc != 2)
+ *      {
+ *         fprintf(stderr, "You need to provide a file to spy\n");
+ *         return 1;
+ *      }
+ *
+ *    spy_init();
+ *
+ *    spy = spy_new();
+ *    spy_file_new(spy, argv[1]);
+ *
+ *    eeh = ecore_event_handler_add(SPY_EVENT_LINE, _line_event, spy);
+ *
+ *    ecore_main_loop_begin();
+ *    ecore_event_handler_del(eeh);
+ *
+ *    spy_free(spy);
+ *    spy_shutdown();
+ *
+ *    return 0;
+ * }
+ * @endcode
+ * Ask it to spy a file on which you will constantly add new lines
+ * to see the events in the @a _line_event() function.<br />
+ * Libspy is also able to detect a truncate, to reset its internals
+ * and go back to begin of file.
  */
 
 /**
@@ -144,6 +259,26 @@ type = syslog
  * Rules is an asynchronous library for the loading of smman rules.<br />
  * These rules are basic configuration files, that we read using the
  * @ref Lib-Conf.<br />
+ *
+ * @section Lib-Rules-Algorithm Algorithm
+ * Here is a simplified sequence chart to understand how it works.
+ * @msc
+ * MainLoop,Thread1,Thread2;
+ * MainLoop=>MainLoop [ label = "rules_load()" ];
+ * MainLoop=>Thread1  [ label = "eio_file_direct_ls()" ];
+ * Thread1=>MainLoop  [ label = "rules_load_ls()" ];
+ * ---                [ label = "Loop for every rule found" ];
+ * MainLoop=>Thread2  [ label = "conf_load()" ];
+ * Thread2=>MainLoop  [ label = "rules_load_rule()" ];
+ * MainLoop=>MainLoop [ label = "app_callback()" ];
+ * ---                [ label = "End of loop" ];
+ * Thread1=>MainLoop  [ label = "rules_load_ls_done()" ];
+ * MainLoop=>MainLoop [ label = "app_callback()" ];
+ * @endmsc
+ * For each call to spy_file_new(), an ecore timer is created to
+ * periodically call spy_file_poll(). <br />
+ * Once a changed is observed on the file, a thread is created to get
+ * lines added to the file, and create the ecore events.
  *
  * @section Lib-Rules-Code Code documentation
  * @li @ref Lib-Rules-Functions
