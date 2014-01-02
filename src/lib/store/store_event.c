@@ -1,5 +1,24 @@
 #include "store_private.h"
 
+/**
+ * @addtogroup Lib-Store-Functions
+ * @{
+ */
+
+/**
+ * @cond IGNORE
+ */
+
+/**
+ * @brief Store received data from ElasticSearch server.
+ * @param data Store_Add structure.
+ * @param type UNUSED.
+ * @param event_info Ecore_Con_Event_Url_Data structure.
+ * @return EINA_TRUE.
+ *
+ * This function is called by ecore_con_url for every data block
+ * received from web server.
+ */
 Eina_Bool
 store_event_data(void *data,
                  int type EINA_UNUSED,
@@ -16,11 +35,15 @@ store_event_data(void *data,
    eina_strbuf_append_length(sa->data.buf,
                              (const char *)url_data->data,
                              url_data->size);
-   sa->data.len += url_data->size;
-
    return EINA_TRUE;
 }
 
+/**
+ * @brief Storing is over and we got total answer.
+ * @param data Store_Add structure.
+ * @param type UNUSED.
+ * @param event_info Ecore_Con_Event_Url_Complete.
+ */
 Eina_Bool
 store_event_complete(void *data,
                      int type EINA_UNUSED,
@@ -53,3 +76,11 @@ store_event_complete(void *data,
    store_add_free(sa);
    return EINA_TRUE;
 }
+
+/**
+ * @endcond
+ */
+
+/**
+ * @}
+ */

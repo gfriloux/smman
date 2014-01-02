@@ -1,9 +1,21 @@
 #include "store_private.h"
 
+/**
+ * @addtogroup Lib-Store-Functions
+ * @{
+ */
+
+/**
+ * @cond IGNORE
+ */
+
 static int _store_init_count = 0;
 int _store_log_dom_global = -1;
 
-
+/**
+ * @brief Frees a Store_Add structure.
+ * @param sa Store_Add structure to free.
+ */
 void
 store_add_free(Store_Add *sa)
 {
@@ -14,6 +26,21 @@ store_add_free(Store_Add *sa)
    free(sa);
 }
 
+/**
+ * @endcond
+ */
+
+/**
+ * @brief Store given data to store's url.
+ * @param store Store structure.
+ * @param buf Buffer to store.
+ * @param len Length of @buf.
+ * @param done_cb Callback to call when data is stored.
+ * @param error_cb Callback to call if an error occured.
+ * @param data Data to pass to callbacks.
+ * @return EINA_TRUE if we try to store data.
+ *         EINA_FALSE if an error occured when creating storing process.
+ */
 Eina_Bool
 store_add(Store *store,
           const char *buf,
@@ -89,18 +116,33 @@ sa_free:
    return EINA_FALSE;
 }
 
+/**
+ * @brief Attach given data to the Store structure.
+ * @param store Store structure to attach data to.
+ * @param data Data to attach to structure.
+ */
 void
 store_data_set(Store *store, const void *data)
 {
    store->data = data;
 }
 
+/**
+ * @brief Get unmodified data attached to the store structure.
+ * @param store Store structure.
+ * @return Pointer to attached data.
+ */
 void *
 store_data_get(Store *store)
 {
    return (void *)store->data;
 }
 
+/**
+ * @brief Create a new store structure.
+ * @param url URL for storing data.
+ * @return Pointer to newly created Store structure.
+ */
 Store *
 store_new(const char *url)
 {
@@ -126,6 +168,10 @@ store_free:
    return NULL;
 }
 
+/**
+ * @brief Frees an allocated Store structure.
+ * @param store Store structure to free.
+ */
 void
 store_free(Store *store)
 {
@@ -135,6 +181,10 @@ store_free(Store *store)
    free(store);
 }
 
+/**
+ * @brief Initialize the store library and all it's required submodules.
+ * @return 1 or greater on success, 0 otherwise.
+ */
 int
 store_init(void)
 {
@@ -189,6 +239,12 @@ shutdown_eina:
    return --_store_init_count;
 }
 
+/**
+ * @brief Shutdown store and all it's submodules if possible.
+ * @return 0 if store shuts down, greater than 0 otherwise.
+ *         This function shuts down all things set up in store_init()
+ *         and cleans up its memory.
+ */
 int
 store_shutdown(void)
 {
@@ -209,3 +265,7 @@ store_shutdown(void)
    eina_shutdown();
    return _store_init_count;
 }
+
+/**
+ * @}
+ */

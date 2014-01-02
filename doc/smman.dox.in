@@ -221,7 +221,7 @@
  *    return EINA_TRUE;
  * }
  *
- * int main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
+ * int main(int argc, char **argv)
  * {
  *    Spy *spy;
  *    Ecore_Event_Handler *eeh;
@@ -285,4 +285,81 @@
  * @section Lib-Rules-Code Code documentation
  * @li @ref Lib-Rules-Functions
  * @defgroup Lib-Rules-Functions API functions
+ */
+
+
+/**
+ * @defgroup Lib-Store Store Library
+ *
+ * @section Lib-Store-Introduction Introduction
+ * Store is an asynchronous library for the sending of data to an HTTP
+ * URL.
+ *
+ * @section Lib-Store-Algorithm
+ * All calls in this library are made inside the main loop.<br />
+ * We do so because we dont have any heavy operations to do like I/O,
+ * or heavy work on strings. We just send data and wait for server
+ * to answer.
+ * @msc
+ * App,Store,Ecore,Ecore_Con;
+ * App=>Store       [ label = "store_add()", URL = "@ref store_add" ];
+ * Store=>Ecore     [ label = "ecore_event_handler_add()" ];
+ * Store=>Ecore     [ label = "ecore_event_handler_add()" ];
+ * Store=>Ecore_Con [ label = "ecore_con_url_post()" ];
+ * ---              [ label = "From here, we wait for events" ];
+ * Ecore_Con=>Store [ label = "store_event_data()" ];
+ * Ecore_Con=>Store [ label = "store_event_complete()" ];
+ * Store=>App       [ label = "done_cb()" ];
+ * @endmsc
+ *
+ * @section Lib-Store-Code Code documentation
+ * @li @ref Lib-Store-Functions
+ * @li @ref Lib-Store-Example
+ * @defgroup Lib-Store-Functions API functions
+ * @defgroup Lib-Store-Example Basic Example
+ * @section Lib-Store-Example-Sample-App Sample program
+ * This program will send a given string to a local elasticsearch server.
+ * @code
+ * #include <Store.h>
+ *
+ * void
+ * done_cb(void *data EINA_UNUSED,
+ *         Store *store EINA_UNUSED,
+ *         char *answer,
+ *         size_t len EINA_UNUSED)
+ * {
+ *    printf("Done_Cb : %s\n", answer);
+ *
+ * }
+ *
+ * void
+ * error_cb(void *data EINA_UNUSED,
+ *          Store *store EINA_UNUSED,
+ *          char *strerr)
+ * {
+ *    printf("Error_Cb : %s\n", strerr);
+ * }
+ *
+ * int main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
+ * {
+ *    Store *store;
+ *
+ *    if (argc != 2)
+ *      {
+ *         fprintf(stderr, "You need to provide a string to store\n");
+ *         return 1;
+ *      }
+ *
+ *    store_init();
+ *
+ *    store = store_new("http://localhost:9200/logsmanager/");
+ *    store_add(store, argv[1], strlen(argv[1]),
+ *              done_cb, error_cb, store);
+ *
+ *    ecore_main_loop_begin();
+ *
+ *    store_shutdown();
+ *    return 0;
+ * }
+ * @endcode
  */

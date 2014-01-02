@@ -3,6 +3,22 @@
 
 #include "store_private.h"
 
+
+/**
+ * @addtogroup Lib-Store-Functions
+ * @{
+ */
+
+/**
+ * @cond IGNORE
+ */
+
+
+/**
+ * @brief Creates a new string from a format string.
+ * @param s the NULL-terminated format string to retrieve an instance of.
+ * @return A pointer to the allocated buffer. NULL on failure.
+ */
 char *
 store_utils_dupf(const char *s, ...)
 {
@@ -19,3 +35,11 @@ store_utils_dupf(const char *s, ...)
 
    return str;
 }
+
+/**
+ * @endcond
+ */
+
+/**
+ * @}
+ */
