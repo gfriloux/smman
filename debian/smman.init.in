@@ -52,6 +52,7 @@ case "$1" in
    log_daemon_msg "Reloading $PROGRAM"
    do_restart
    log_end_msg $?
+   ;;
   *)
    log_success_msg "Usage: $0 {start|stop|restart|force-reload|reload}" >&2
    exit 1
