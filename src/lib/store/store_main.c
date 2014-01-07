@@ -92,7 +92,7 @@ store_add(Store *store,
    sa->cb.done = done_cb;
    sa->cb.error = error_cb;
    sa->cb.data = data;
-DBG("store[%p] sa[%p", store, sa);
+   DBG("store[%p] sa[%p] buf[%s]", store, sa, buf);
    ecore_con_url_data_set(sa->ec, sa);
    r = ecore_con_url_post(sa->ec, buf, len, "text/json");
    if (!r)
