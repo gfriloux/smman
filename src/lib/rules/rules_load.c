@@ -24,7 +24,7 @@ void
 rules_load_rule(void *data,
                 Conf *conf)
 {
-   Rules_Load *rl;
+   Rule_Load *rl;
    Rule *rule;
    Eina_Iterator *it;
    const char *file,
@@ -105,6 +105,7 @@ rules_load_rule(void *data,
    rl->cb.progress((void *)rl->cb.data, rl->rules, rule);
    rl->rules->rules = eina_inlist_append(rl->rules->rules,
                                          EINA_INLIST_GET(rule));
+   free(rl);
 }
 
 /**
@@ -165,15 +166,28 @@ rules_load_ls(void *data,
               const Eina_File_Direct_Info *info)
 {
    Rules_Load *rl;
-
+   Rule_Load *ruleload;
    rl = data;
    DBG("rl[%p] Rule file : %s", rl, info->path + info->name_start);
 
    /* We load file */
+   ruleload = calloc(1, sizeof(Rule_Load));
+   if (!ruleload)
+     {
+        ERR("Failed to allocate new Rule_Load structure");
+        return;
+     }
+
+   ruleload->rules = rl->rules;
+   ruleload->cb.progress = rl->cb.progress;
+   ruleload->cb.done = rl->cb.done;
+   ruleload->cb.error = rl->cb.error;
+   ruleload->cb.data = rl->cb.data;
+
    conf_load((char *)info->path,
              rules_load_rule,
              rules_load_rule_error,
-             rl);
+             ruleload);
 }
 
 /**

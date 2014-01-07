@@ -27,6 +27,19 @@ typedef struct _Rules_Load
    } cb;
 } Rules_Load;
 
+typedef struct _Rule_Load
+{
+   Rules *rules;
+
+   struct
+   {
+      Rules_Progress_Cb progress;
+      Rules_Done_Cb done;
+      Rules_Error_Cb error;
+      const void *data;
+   } cb;
+} Rule_Load;
+
 Eina_Bool rules_load_ls_filter(void *data, Eio_File *handler, const Eina_File_Direct_Info *info);
 void rules_load_ls(void *data, Eio_File *handler, const Eina_File_Direct_Info *info);
 void rules_load_ls_done(void *data, Eio_File *handler);
