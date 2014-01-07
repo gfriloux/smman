@@ -38,6 +38,7 @@ typedef struct _Store_Add
    struct
    {
       Eina_Strbuf *buf; /*!< Buffer for data reception */
+      char *sent; /*!< Data to store */
    } data;
 
    struct
