@@ -27,14 +27,11 @@
  * JSON.
  * @li @b host : Allows you to set a different host that the one returned
  *     by command hostname (optionnal).
- * @li @b type : Default type for all logs (optionnal).
- *
  *
  * Exemple of configuration file : <br />
  * @code
  * server = http://localhost:9200/logstash/
  * host = BlackStar
- * type = syslog
  * @endcode
  *
  * <br />
@@ -47,7 +44,6 @@
  * Basically, rules allows you to write matches about filenames or messages
  * (using globbing/regexp), and set informations like :
  * @li source_host : Set a custom hostname
- * @li type : Set a custom type
  * @li tags : Add tags to the message
  * @li delete : Do not index the log, just drop it
  *
