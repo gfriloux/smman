@@ -61,14 +61,14 @@ _log_send(Smman *smman,
    cJSON_AddStringToObject(json, "@type", "syslog");
 
    json_tags = cJSON_CreateArray();
-   cJSON_AddItemToObject(json, "tags", json_tags);
+   cJSON_AddItemToObject(json, "@tags", json_tags);
 
    EINA_LIST_FOREACH(log->tags, l, tag)
      {
         cJSON_AddItemToArray(json_tags, cJSON_CreateString(tag));
      }
 
-   cJSON_AddItemToObject(json, "fields", cJSON_CreateObject());
+   cJSON_AddItemToObject(json, "@fields", cJSON_CreateObject());
 
    cJSON_AddStringToObject(json, "@message", log->message);
    cJSON_AddStringToObject(json, "@timestamp", date);
