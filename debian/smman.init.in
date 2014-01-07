@@ -1,0 +1,61 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides: smman
+# Required-Start: $syslog
+# Required-Stop: $syslog
+# Default-Start:  2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start Smman the syslog manager.
+# Description: Start Smman the syslog manager.
+### END INIT INFO
+
+DAEMON=@prefix@/bin/smman
+DESC="smman"
+
+. /lib/lsb/init-functions
+
+if [ -f @sysconfdir@/default/smman ] ; then
+   . @sysconfdir@/default/smman
+fi
+set -e
+do_start() {
+   start-stop-daemon --start --background --oknodo --exec $DAEMON -- $DAEMON_OPTS
+}
+
+do_stop() {
+   start-stop-daemon --stop --oknodo --quiet --exec $DAEMON  --signal 9
+}
+
+do_restart() {
+   start-stop-daemon --stop --oknodo --quiet --exec $DAEMON  --signal USR1
+}
+
+case "$1" in
+  start)
+   log_daemon_msg "Starting $PROGRAM"
+   do_start
+   log_end_msg $?
+   ;;
+  stop)
+   log_daemon_msg "Stopping $PROGRAM"
+   do_stop
+   log_end_msg $?
+   ;;
+  restart|force-reload)
+   log_daemon_msg "Restarting $PROGRAM"
+   do_stop
+   sleep 1
+   do_start
+   log_end_msg $?
+   ;;
+  reload)
+   log_daemon_msg "Reloading $PROGRAM"
+   do_restart
+   log_end_msg $?
+  *)
+   log_success_msg "Usage: $0 {start|stop|restart|force-reload|reload}" >&2
+   exit 1
+   ;;
+esac
+
+exit 0

@@ -69,6 +69,7 @@ AC_CONFIG_HEADER([config.h])
 
 AC_OUTPUT([
 doc/smman.dox
+debian/smman.init
 ])
 
 echo

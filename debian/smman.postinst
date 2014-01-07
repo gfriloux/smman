@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+case "$1" in
+   configure)
+      update-rc.d smman start 28 2 3 4 5 . stop 28 0 1 6 .
+      /etc/init.d/smman restart
+   ;;
+esac
+exit 0

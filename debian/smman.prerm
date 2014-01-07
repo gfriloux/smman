@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+   remove)
+      RESULT=0
+      invoke-rc.d smman stop
+   ;;
+esac
+
+exit 0
+
