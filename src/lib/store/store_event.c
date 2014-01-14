@@ -71,13 +71,15 @@ store_event_complete(void *data,
                                   eina_strbuf_string_get(sa->data.buf));
         sa->cb.error((void *)sa->cb.data, sa->store, errstr);
         free(errstr);
-        return EINA_TRUE;
+        goto complete_end;
      }
 
    sa->cb.done((void *)sa->cb.data,
                sa->store,
                (char *)eina_strbuf_string_get(sa->data.buf),
                eina_strbuf_length_get(sa->data.buf));
+
+complete_end:
    store_add_free(sa);
    return EINA_TRUE;
 }

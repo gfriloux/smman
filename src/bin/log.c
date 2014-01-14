@@ -177,10 +177,11 @@ log_line_event(void *data,
    eina_iterator_free(it);
 
    if (log->todel)
-     return EINA_TRUE;
+     goto log_end;
 
    _log_send(smman, log);
 
+log_end:
    _log_free(log);
    return EINA_TRUE;
 }
