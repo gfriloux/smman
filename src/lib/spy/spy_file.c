@@ -136,6 +136,7 @@ _spy_file_cb(void *data,
    if (sf->read.fd == -1)
      {
         ERR("Failed to open %s : %s", sf->name, strerror(errno));
+        sf->read.error = EINA_TRUE;
         return;
      }
 
@@ -151,6 +152,7 @@ _spy_file_cb(void *data,
         close(sf->read.fd);
         free(sf->read.databuf);
         sf->read.databuf = NULL;
+        sf->read.error = EINA_TRUE;
         return;
      }
 
@@ -183,7 +185,10 @@ _spy_file_end_cb(void *data,
 
    sf->poll.running = EINA_FALSE;
 
-   ecore_job_add(_spy_file_job, sf);
+   if (!sf->read.error)
+     ecore_job_add(_spy_file_job, sf);
+   else
+     sf->read.error = EINA_FALSE;
 }
 
 /**
@@ -254,6 +259,7 @@ spy_file_poll(void *data)
    sf->read.length = toread;
 
    sf->poll.running = EINA_TRUE;
+   sf->read.error = EINA_FALSE;
    et = ecore_thread_run(_spy_file_cb,
                          _spy_file_end_cb,
                          _spy_file_cancel_cb,

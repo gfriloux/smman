@@ -95,6 +95,7 @@ store_add(Store *store,
    sa->data.sent = strdup(buf);
    DBG("store[%p] sa[%p] buf[%s]", store, sa, buf);
    ecore_con_url_data_set(sa->ec, sa);
+   ecore_con_url_timeout_set(sa->ec, 10.0);
    r = ecore_con_url_post(sa->ec, buf, len, "text/json");
    if (!r)
      {

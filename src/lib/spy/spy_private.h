@@ -37,6 +37,7 @@ struct _Spy_File
       Eina_Strbuf *buf;
       char *databuf;
       ssize_t nbr;
+      Eina_Bool error : 1;
    } read;
 
    struct
