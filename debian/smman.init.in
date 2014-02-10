@@ -11,6 +11,7 @@
 
 DAEMON=@prefix@/bin/smman
 DESC="smman"
+PID=/var/run/smman.pid
 
 . /lib/lsb/init-functions
 
@@ -19,15 +20,15 @@ if [ -f @sysconfdir@/default/smman ] ; then
 fi
 set -e
 do_start() {
-   start-stop-daemon --start --background --oknodo --exec $DAEMON -- $DAEMON_OPTS
+   start-stop-daemon --start --background --oknodo --exec $DAEMON -- $DAEMON_OPTS --pidfile ${PID}
 }
 
 do_stop() {
-   start-stop-daemon --stop --oknodo --quiet --exec $DAEMON  --signal 9
+   start-stop-daemon --stop --oknodo --quiet --exec $DAEMON  --signal 9 --pidfile ${PID}
 }
 
 do_restart() {
-   start-stop-daemon --stop --oknodo --quiet --exec $DAEMON  --signal USR1
+   start-stop-daemon --stop --oknodo --quiet --exec $DAEMON  --signal USR1 --pidfile ${PID}
 }
 
 case "$1" in
@@ -53,8 +54,11 @@ case "$1" in
    do_restart
    log_end_msg $?
    ;;
+  status)
+   status_of_proc -p ${PID} ${DAEMON} smman && echo 0 || exit $?
+   ;;
   *)
-   log_success_msg "Usage: $0 {start|stop|restart|force-reload|reload}" >&2
+   log_success_msg "Usage: $0 {start|stop|restart|force-reload|reload|status}" >&2
    exit 1
    ;;
 esac
