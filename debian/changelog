@@ -3,13 +3,13 @@ smman (2.0.2) stable; urgency=low
    * Fix infinite loop when elasticsearch goes bad.
    * Add status command to init script.
 
- -- Guillaume Friloux <guillaume.friloux@aspfrance.com>  Mon, 10 Feb 16:38:00 +0100
+ -- Guillaume Friloux <guillaume.friloux@aspfrance.com>  Mon, 10 Feb 2014 16:38:00 +0100
 
 smman (2.0.1) stable; urgency=low
 
    * Fix a segfault when loading rules.
 
- -- Guillaume Friloux <guillaume.friloux@aspfrance.com>  Tue, 07 Jan 09:46:00 +0100
+ -- Guillaume Friloux <guillaume.friloux@aspfrance.com>  Tue, 07 Jan 2014 09:46:00 +0100
 
 smman (2.0.0) stable; urgency=low
 
