@@ -20,7 +20,7 @@ if [ -f @sysconfdir@/default/smman ] ; then
 fi
 set -e
 do_start() {
-   start-stop-daemon --start --background --oknodo --exec $DAEMON -- $DAEMON_OPTS --pidfile ${PID}
+   start-stop-daemon --start --background --oknodo --pidfile ${PID} --exec $DAEMON -- $DAEMON_OPTS
 }
 
 do_stop() {
